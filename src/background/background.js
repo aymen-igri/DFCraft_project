@@ -1,104 +1,122 @@
-// Use the same wrapper approach
-import { signalReceiverBlocker } from "./blockerWorker";
+// background.js
+import { signalReceiverBlocker } from './blockerWorker.js';
+import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
 
+ const browserAPI = (() => {
+  // Firefox uses 'browser', Chrome uses 'chrome'
+  if (typeof browser !== 'undefined' && browser.runtime) {
+    return browser; // Firefox (already Promise-based)
+  }
 
-const browserAPI = (() => {
-  if (typeof browser !== 'undefined') return browser;
-  if (typeof chrome !== 'undefined') {
+  if (typeof chrome !== 'undefined' && chrome.runtime) {
     return {
-      runtime: chrome.runtime,
+      runtime: {
+        sendMessage: (message) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.runtime.sendMessage(message, (response) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(response);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+        onMessage: {
+          addListener: (cb) => chrome.runtime.onMessage.addListener(cb),
+          removeListener: (cb) => chrome.runtime.onMessage.removeListener(cb),
+        },
+        getURL: (path) => chrome.runtime.getURL(path),
+      },
       storage: {
         local: {
-          get: (keys) => new Promise(resolve => 
-            chrome.storage.local.get(keys, resolve)
-          ),
-          set: (items) => new Promise(resolve => 
-            chrome.storage.local.set(items, resolve)
-          )
-        }
+          get: (keys) =>
+            new Promise((resolve, reject) => {
+              try {
+                chrome.storage.local.get(keys, (result) => {
+                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  else resolve(result);
+                });
+              } catch (err) {
+                reject(err);
+              }
+            }),
+          set: (items) =>
+            new Promise((resolve, reject) => {
+              try {
+                chrome.storage.local.set(items, () => {
+                  if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                  else resolve();
+                });
+              } catch (err) {
+                reject(err);
+              }
+            }),
+        },
       },
-      action: chrome.action || chrome.browserAction
+      tabs: {
+        query: (queryInfo) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.query(queryInfo, (tabs) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tabs);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+        update: (tabId, updateProperties) =>
+          new Promise((resolve, reject) => {
+            try {
+              chrome.tabs.update(tabId, updateProperties, (tab) => {
+                if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                else resolve(tab);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          }),
+      },
+      action: chrome.action || chrome.browserAction,
+      notifications: chrome.notifications,
     };
   }
+
+  // fallback for testing in non-extension environment
+  console.warn('No browser extension API found - using mock');
+  return {
+    runtime: {
+      sendMessage: () => Promise.resolve(null),
+      onMessage: { addListener: () => {}, removeListener: () => {} },
+      getURL: (path) => path,
+    },
+    storage: {
+      local: { get: () => Promise.resolve({}), set: () => Promise.resolve() },
+    },
+    tabs: { query: () => Promise.resolve([]), update: () => Promise.resolve() },
+    action: {},
+    notifications: {},
+  };
 })();
 
-let timerData = {
-  time: 60,
-  isRunning: false,
-  lastUpdate: Date.now()
-};
 
-// Load saved state
-browserAPI.storage.local.get(['timerData']).then((result) => {
-  if (result.timerData) {
-    timerData = result.timerData;
-    updateTimerFromLastSave();
-  }
-});
 
-function updateTimerFromLastSave() {
-  if (timerData.isRunning && timerData.time > 0) {
-    const now = Date.now();
-    const secondsPassed = Math.floor((now - timerData.lastUpdate) / 1000);
-    const oldTime = timerData.time;
-    timerData.time = Math.max(0, timerData.time - secondsPassed);
-    timerData.lastUpdate = now;
-    console.log(`⏩ Calculated elapsed time: ${secondsPassed}s (${oldTime} → ${timerData.time})`);
-    saveTimerData();
-  }
+
+
+
+
+async function init() {
+ await loadTimer();
+
+  // 2️⃣ Installer le listener spécifique au timer
+  setupTimerListener();
+
+  // 3️⃣ Démarrer la boucle du timer
+  startTimerLoop();
+  // 4️⃣ Démarrer la logique du bloqueur
+  signalReceiverBlocker(); ``
+
 }
 
-function saveTimerData() {
-  browserAPI.storage.local.set({ timerData });
-}
-
-// Message listener
-browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'GET_TIMER') {
-    updateTimerFromLastSave();
-    sendResponse(timerData);
-  } else if (request.type === 'UPDATE_TIMER') {
-    const oldData = { ...timerData };
-    timerData = { 
-      ...timerData, 
-      ...request.data, 
-      lastUpdate: Date.now() 
-    };
-
-    console.log('🔄 UPDATE:', {
-      before: oldData,
-      after: timerData,
-      changed: {
-        time: oldData.time !== timerData.time,
-        isRunning: oldData.isRunning !== timerData.isRunning
-      }
-    });
-    
-    saveTimerData();
-    sendResponse({ success: true });
-  }
-  return true; // Keep channel open for async response
-});
-
-// Timer loop
-setInterval(() => {
-  if (timerData.isRunning && timerData.time > 0) {
-    timerData.time--;
-    timerData.lastUpdate = Date.now();
-    saveTimerData();
-    
-    // Update badge
-    if (browserAPI.action && browserAPI.action.setBadgeText) {
-      browserAPI.action.setBadgeText({ text: String(timerData.time) });
-    }
-    
-    // Notify open pages
-    browserAPI.runtime.sendMessage({ 
-      type: 'TIMER_TICK', 
-      data: timerData 
-    }).catch(() => {}); // Ignore if no listeners
-  }
-}, 1000);
-
-
-signalReceiverBlocker() ;
+init();
