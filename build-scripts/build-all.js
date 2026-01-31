@@ -1,12 +1,12 @@
-import fs from 'fs-extra';
-import { execSync } from 'child_process';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs-extra";
+import { execSync } from "child_process";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('🔨 Building for all browsers...');
+console.log("🔨 Building for all browsers...");
 
 try {
   const distDir = path.join(__dirname, '..', 'dist');
@@ -29,12 +29,14 @@ try {
 
   // 4️⃣ Files needed from main build
   const neededFiles = [
-    'content.js',
-    'main.js',
-    'main.css',
-    'popup.css',
-    'src',
-    'staticPages'
+     "background.js",
+    "content.js",
+    "main.js",
+    "main.css",
+    "popup.css",
+    "offscreen.html", // Add this
+    "offscreen.js",
+    "src"
   ];
 
   const allItems = fs.readdirSync(distDir).filter(
@@ -91,13 +93,13 @@ try {
   const soundsDir = path.join(__dirname, '..', 'public', 'sounds');
 
   if (fs.existsSync(iconsDir)) {
-    fs.copySync(iconsDir, path.join(chromeDir, 'icons'));
-    fs.copySync(iconsDir, path.join(firefoxDir, 'icons'));
+    fs.copySync(iconsDir, path.join(chromeDir, "icons"));
+    fs.copySync(iconsDir, path.join(firefoxDir, "icons"));
   }
 
   if (fs.existsSync(soundsDir)) {
-    fs.copySync(soundsDir, path.join(chromeDir, 'sounds'));
-    fs.copySync(soundsDir, path.join(firefoxDir, 'sounds'));
+    fs.copySync(soundsDir, path.join(chromeDir, "sounds"));
+    fs.copySync(soundsDir, path.join(firefoxDir, "sounds"));
   }
 
   // 9️⃣ Cleanup temporary folders
@@ -112,6 +114,12 @@ try {
   console.log('📁 dist/chrome');
   console.log('📁 dist/firefox');
 
+  // List what's in each folder
+  console.log("\n📂 Chrome folder contains:");
+  fs.readdirSync(chromeDir).forEach((file) => console.log(`   - ${file}`));
+
+  console.log("\n📂 Firefox folder contains:");
+  fs.readdirSync(firefoxDir).forEach((file) => console.log(`   - ${file}`));
 } catch (error) {
   console.error('❌ Build failed:', error.message);
   process.exit(1);

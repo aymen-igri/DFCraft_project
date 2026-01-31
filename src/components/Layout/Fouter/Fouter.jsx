@@ -1,3 +1,10 @@
+import { Github, Mail, Heart, Sparkles } from "lucide-react";
+
 export default function Footer() {
-    return (<footer>Footer</footer>)
+  
+  return (
+    <footer>
+      footer content
+    </footer>
+  );
 }

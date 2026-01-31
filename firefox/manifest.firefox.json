@@ -5,9 +5,9 @@
   "description": "Craft your focus with Pomodoro timer, todos, and distraction blocking",
   
   "icons": {
-    "16": "icons/icon-16.png",
-    "48": "icons/icon-48.png",
-    "128": "icons/icon-128.png"
+    "16": "icons/CARACTER-16.png",
+    "48": "icons/CARACTER-48.png",
+    "128": "icons/CARACTER-128.png"
   },
   
   "browser_action": {
@@ -27,11 +27,14 @@
     }
   ],
   
-  "permissions": [
-    "storage",
-    "notifications",
-    "alarms",
-    "activeTab"
+  "permissions": ["storage", "notifications", "alarms", "activeTab", "offscreen"],
+
+  "options_page": "src/options/options.html",
+  
+  "web_accessible_resources": [
+    "sounds/*.wav",
+    "offscreen.html",
+    "offscreen.js"
   ],
   
   "options_ui": {
