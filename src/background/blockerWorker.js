@@ -1,3 +1,5 @@
+import { ConciergeBell, Rss } from "lucide-react";
+import { browserAPI } from "../shared/utils/browserAPI";
 
 
 
@@ -7,7 +9,6 @@
 async function getUrls() {
     try {
         const result = await browserAPI.storage.local.get('urls');
-        // Si rien n'existe encore, tu peux fournir une valeur par défaut
         return result.urls || [];
     } catch (err) {
         console.error('Erreur lors de la récupération des URLs :', err);
@@ -15,25 +16,68 @@ async function getUrls() {
     }
 }
 
-// Bloquer l'accès à une URL
-async function blockAccess(element) {
-    if (element.urlBlocked) {
-        const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-        const tab = tabs[0];
-        if (tab && tab.url && tab.url.includes(element.url)) {
-            await browserAPI.tabs.update(tab.id, { url: browserAPI.runtime.getURL("staticPages/blocked.html") });
-        }
-    }
+
+
+async function blockAccess(result , tab  ) {
+     
+         result.forEach(async (element) => {
+            if(element.urlBlocked && tab &&  tab.url.includes(element.url)){
+                await browserAPI.tabs.update(tab.id, { url: browserAPI.runtime.getURL("staticPages/blocked.html") });
+            }     
+         });
 }
 
+
+// // Bloquer ou activer le son sur les onglets
+// async function blockSound(element) {
+//     const tabs = await browserAPI.tabs.query({});
+//     for (const tab of tabs) {
+//         if (tab.url && tab.url.includes(element.url)) {
+//             await browserAPI.tabs.update(tab.id, { muted: element.soundBlocked });
+//         }
+//     }
+// }
+
+
 // Bloquer ou activer le son sur les onglets
-async function blockSound(element) {
-    const tabs = await browserAPI.tabs.query({});
-    for (const tab of tabs) {
-        if (tab.url && tab.url.includes(element.url)) {
-            await browserAPI.tabs.update(tab.id, { muted: element.soundBlocked });
+async function blockSound( result) {
+
+
+    result.forEach(async (element) => {
+        if (element.soundBlocked) {
+
+            const tabs = await browserAPI.tabs.query({});
+            for (const tab of tabs) {
+                if (tab.url && tab.url.includes(element.url)) {
+                    await browserAPI.tabs.update(tab.id, { muted: element.soundBlocked });
+                }
+            }
         }
-    }
+    });
+
+
+
+}
+
+
+
+
+// export function blockWorker() {
+    
+//             console.log("C est le browserApi :" , browserAPI )
+//              browserAPI.tabs.onUpdated.addListener
+// }
+
+export function blockWorker() {
+           browserAPI.tabs.onUpdated.addListener(async (tabId, changeInfo, tab)=> {
+                try {
+                    const result = await getUrls()
+                     await blockAccess(result ,  tab )
+                     await blockSound(result)
+                } catch (error) {
+                    console.error("Erreur dans le blocage :", error);
+                }
+            })
 }
 
 
@@ -41,7 +85,7 @@ async function blockSound(element) {
 export function signalReceiverBlocker() {
     browserAPI.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         try {
-            if (message.type === "BLOCK") {
+            if (message.type === "BLOC") {
                 const result = await getUrls
                 result.forEach(async (element) => {
                     if (message.sownd) {

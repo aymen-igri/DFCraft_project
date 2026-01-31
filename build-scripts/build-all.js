@@ -9,109 +9,110 @@ const __dirname = path.dirname(__filename);
 console.log('🔨 Building for all browsers...');
 
 try {
-  // Clean previous builds
-  console.log('🧹 Cleaning previous builds...');
   const distDir = path.join(__dirname, '..', 'dist');
-  if (fs.existsSync(distDir)) {
-    fs.removeSync(distDir);
-  }
-
-  // Run Vite build once
-  console.log('⚡ Running Vite build...');
-  execSync('npm run build', { stdio: 'inherit' });
-
-  // Create browser-specific directories
   const chromeDir = path.join(distDir, 'chrome');
   const firefoxDir = path.join(distDir, 'firefox');
-  
+  const backgroundDistDir = path.join(distDir, 'background');
+
+  // 1️⃣ Clean dist
+  console.log('🧹 Cleaning previous builds...');
+  fs.removeSync(distDir);
+  fs.ensureDirSync(distDir);
+
+  // 2️⃣ Main Vite build
+  console.log('⚡ Running main Vite build...');
+  execSync('npm run build', { stdio: 'inherit' });
+
+  // 3️⃣ Create browser folders
   fs.ensureDirSync(chromeDir);
   fs.ensureDirSync(firefoxDir);
 
-  // Define which files we actually need for the extension
- const neededFiles = [
-  'background.js',
-  'content.js', 
-  'main.js',
-  'main.css',
-  'popup.css',
-  'src',               // popup.html, options.html
-  'staticPages'        // <-- ajoute ce dossier ici
-];
+  // 4️⃣ Files needed from main build
+  const neededFiles = [
+    'content.js',
+    'main.js',
+    'main.css',
+    'popup.css',
+    'src',
+    'staticPages'
+  ];
 
-  // Get all files from dist root and filter only needed ones
-  const allItems = fs.readdirSync(distDir).filter(item => 
-    item !== 'chrome' && item !== 'firefox'
+  const allItems = fs.readdirSync(distDir).filter(
+    item => !['chrome', 'firefox', 'background'].includes(item)
   );
-  
-  const neededItems = allItems.filter(item => neededFiles.includes(item));
-  
-  console.log('📁 All build files:', allItems);
-  console.log('✅ Copying needed files:', neededItems);
-  console.log('🗑️ Skipping unnecessary files:', allItems.filter(item => !neededFiles.includes(item)));
 
-  // Copy only needed files to both browser folders
+  const neededItems = allItems.filter(item => neededFiles.includes(item));
+
+  console.log('✅ Copying base files:', neededItems);
+
   for (const item of neededItems) {
-    const srcPath = path.join(distDir, item);
-    const chromeDestPath = path.join(chromeDir, item);
-    const firefoxDestPath = path.join(firefoxDir, item);
-    
-    // Copy to both folders
-    if (fs.statSync(srcPath).isDirectory()) {
-      fs.copySync(srcPath, chromeDestPath);
-      fs.copySync(srcPath, firefoxDestPath);
+    const src = path.join(distDir, item);
+    const chromeDest = path.join(chromeDir, item);
+    const firefoxDest = path.join(firefoxDir, item);
+
+    if (fs.statSync(src).isDirectory()) {
+      fs.copySync(src, chromeDest);
+      fs.copySync(src, firefoxDest);
     } else {
-      fs.copyFileSync(srcPath, chromeDestPath);
-      fs.copyFileSync(srcPath, firefoxDestPath);
+      fs.copyFileSync(src, chromeDest);
+      fs.copyFileSync(src, firefoxDest);
     }
   }
 
-  // Copy browser-specific manifests
-  console.log('📋 Copying manifests...');
-  
-  // Chrome manifest
-  const chromeManifestSrc = path.join(__dirname, '..', 'public', 'manifest.chrome.json');
-  const chromeManifestDest = path.join(chromeDir, 'manifest.json');
-  fs.copyFileSync(chromeManifestSrc, chromeManifestDest);
-  
-  // Firefox manifest
-  const firefoxManifestSrc = path.join(__dirname, '..', 'firefox', 'manifest.firefox.json');
-  const firefoxManifestDest = path.join(firefoxDir, 'manifest.json');
-  fs.copyFileSync(firefoxManifestSrc, firefoxManifestDest);
+  // 5️⃣ Build background (bundle unique)
+  console.log('⚙️ Building background...');
+  execSync('npm run build:background', { stdio: 'inherit' });
 
-  // Copy icons and sounds to both
+  const backgroundFile = path.join(backgroundDistDir, 'background.js');
+
+  if (!fs.existsSync(backgroundFile)) {
+    throw new Error('background.js not found after background build');
+  }
+
+  // 6️⃣ Copy background.js to both browsers
+  fs.copyFileSync(backgroundFile, path.join(chromeDir, 'background.js'));
+  fs.copyFileSync(backgroundFile, path.join(firefoxDir, 'background.js'));
+
+  // 7️⃣ Copy manifests
+  console.log('📋 Copying manifests...');
+  fs.copyFileSync(
+    path.join(__dirname, '..', 'public', 'manifest.chrome.json'),
+    path.join(chromeDir, 'manifest.json')
+  );
+
+  fs.copyFileSync(
+    path.join(__dirname, '..', 'firefox', 'manifest.firefox.json'),
+    path.join(firefoxDir, 'manifest.json')
+  );
+
+  // 8️⃣ Copy assets
   console.log('🎨 Copying assets...');
-  
   const iconsDir = path.join(__dirname, '..', 'public', 'icons');
   const soundsDir = path.join(__dirname, '..', 'public', 'sounds');
-  
+
   if (fs.existsSync(iconsDir)) {
     fs.copySync(iconsDir, path.join(chromeDir, 'icons'));
     fs.copySync(iconsDir, path.join(firefoxDir, 'icons'));
   }
-  
+
   if (fs.existsSync(soundsDir)) {
     fs.copySync(soundsDir, path.join(chromeDir, 'sounds'));
     fs.copySync(soundsDir, path.join(firefoxDir, 'sounds'));
   }
 
-  // Clean up root dist files (keep only browser folders)
+  // 9️⃣ Cleanup temporary folders
+  console.log('🧽 Cleaning temporary build artifacts...');
+  fs.removeSync(backgroundDistDir);
+
   for (const item of allItems) {
     fs.removeSync(path.join(distDir, item));
   }
 
-  console.log('\n🎉 All builds complete!');
-  console.log('\n📁 Build output:');
-  console.log('   Chrome:  dist/chrome/');
-  console.log('   Firefox: dist/firefox/');
-  
-  // List what's in each folder
-  console.log('\n📂 Chrome folder contains:');
-  fs.readdirSync(chromeDir).forEach(file => console.log(`   - ${file}`));
-  
-  console.log('\n📂 Firefox folder contains:');
-  fs.readdirSync(firefoxDir).forEach(file => console.log(`   - ${file}`));
+  console.log('\n🎉 Build complete!');
+  console.log('📁 dist/chrome');
+  console.log('📁 dist/firefox');
 
 } catch (error) {
   console.error('❌ Build failed:', error.message);
-  throw error;
+  process.exit(1);
 }

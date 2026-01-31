@@ -1,5 +1,6 @@
 import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
+import { browserAPI } from "../../../shared/utils/browserAPI";
 
 export default function Header({ setChoosenPage }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -7,11 +8,12 @@ export default function Header({ setChoosenPage }) {
 
   useEffect(() => {
     try {
-      if (browser && browser.runtime && browser.runtime.getURL) {
-        setUrlLogo(browser.runtime.getURL("icons/icon-16.png"));;
+      // utilisation sûre de browserAPI
+      if (browserAPI && browserAPI.runtime && browserAPI.runtime.getURL) {
+        setUrlLogo(browserAPI.runtime.getURL("icons/icon-16.png"));
+        console.log("Extension API is available");
       } else {
-        // Fallback for development or non-extension context
-        setUrlLogo("/icons/icon-16.png");
+        setUrlLogo("/icons/icon-16.png"); // fallback dev/local
       }
     } catch (error) {
       console.error("Extension API not available:", error);
@@ -19,32 +21,28 @@ export default function Header({ setChoosenPage }) {
     }
   }, []);
 
-  const toggleMenu = () => {
-    return (
-      showMenu && (
-        <>
-          <div className="absolute p-2 bg-gray-400 top-10 right-2 rounded-sm">
-            <p onClick={() => setChoosenPage("home")}>Home</p>
-            <p onClick={() => setChoosenPage("todo")}>Todo list</p>
-            <p onClick={() => setChoosenPage("sounds")}>Sounds</p>
-            <p onClick={() => setChoosenPage("tracking")}>Tracking</p>
-            <p onClick={() => setChoosenPage("distractionBlocking")}>Distraction blocking</p>
-            <p onClick={() => setChoosenPage("settings")}>Settings</p>
-          </div>
-        </>
-      )
-    );
-  };
+  const toggleMenu = () => (
+    showMenu && (
+      <div className="absolute p-2 bg-gray-400 top-10 right-2 rounded-sm">
+        <p onClick={() => setChoosenPage("home")}>Home</p>
+        <p onClick={() => setChoosenPage("todo")}>Todo list</p>
+        <p onClick={() => setChoosenPage("sounds")}>Sounds</p>
+        <p onClick={() => setChoosenPage("tracking")}>Tracking</p>
+        <p onClick={() => setChoosenPage("distractionBlocking")}>Distraction blocking</p>
+        <p onClick={() => setChoosenPage("settings")}>Settings</p>
+      </div>
+    )
+  );
+
   return (
     <header className="p-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <img src={urlLogo} alt="Logo" className="w-[15px] h-auto mr-1" />
-          <h3 className="">DFCraft</h3>
+          <h3>DFCraft</h3>
         </div>
         <Menu color="black" onClick={() => setShowMenu(!showMenu)} />
       </div>
-
       {toggleMenu()}
     </header>
   );

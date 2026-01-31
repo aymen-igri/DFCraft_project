@@ -26,12 +26,12 @@ export default function Timer() {
   // just for test 
   const BlockedItem = {
     sownd : true ,
-    access : true 
+    acces : true 
   }
 
   return (
     <div className="flex justify-center bg-blue-200 p-5">
-      <Blocker BlockedItem={BlockedItem} isRunning={isRunning}></Blocker>
+      {/* <Blocker BlockedItem={BlockedItem} isRunning={true}></Blocker> */}
       <div className="relative">
         {/* Background circle */}
         <div className="w-52 h-52 rounded-full flex justify-center items-center">

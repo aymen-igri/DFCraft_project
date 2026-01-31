@@ -60,6 +60,7 @@ export const browserAPI = (() => {
               });
             } catch (err) {
               reject(err);
+
             }
           }),
         update: (tabId, updateProperties) =>
@@ -73,6 +74,14 @@ export const browserAPI = (() => {
               reject(err);
             }
           }),
+        onCreated: {
+          addListener: (cb) => chrome.tabs.onCreated.addListener(cb),
+          removeListener: (cb) => chrome.tabs.onCreated.removeListener(cb),
+        },
+        onUpdated: {
+          addListener: (cb) => chrome.tabs.onUpdated.addListener(cb),
+          removeListener: (cb) => chrome.tabs.onUpdated.removeListener(cb),
+        },
       },
       action: chrome.action || chrome.browserAction,
       notifications: chrome.notifications,
@@ -84,7 +93,7 @@ export const browserAPI = (() => {
   return {
     runtime: {
       sendMessage: () => Promise.resolve(null),
-      onMessage: { addListener: () => {}, removeListener: () => {} },
+      onMessage: { addListener: () => { }, removeListener: () => { } },
       getURL: (path) => path,
     },
     storage: {

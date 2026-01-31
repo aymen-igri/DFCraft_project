@@ -1,5 +1,5 @@
 // background.js
-import { signalReceiverBlocker } from './blockerWorker.js';
+import { blockWorker } from './blockerWorker.js';
 import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
 
  const browserAPI = (() => {
@@ -113,9 +113,11 @@ async function init() {
   setupTimerListener();
 
   // 3️⃣ Démarrer la boucle du timer
+
   startTimerLoop();
-  // 4️⃣ Démarrer la logique du bloqueur
-  signalReceiverBlocker(); ``
+  blockWorker() ;
+
+  console.log("C'est le background")
 
 }
 

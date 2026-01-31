@@ -4,17 +4,15 @@ import UrlList from "../../components/List/UrlList";
 import SelectUrlState from "../../components/MultiSelect/SelectUrlState";
 import SuggestionButton from "../../components/Button/SuggestionButton";
 import SuggestionDialog from "../../components/Dialog/SuggestionDialog";
-import useBlockUrl from "../../shared/hooks/useBlockUrl";
 import useSaveUrl from "../../shared/hooks/useSaveUrl";
 
 
 
 
 const DistractionBlockingPage = () => {
-
    const [showDialog, setShowDialog] = useState(false);
-    const {urlElements , setUrlElement} = useSaveUrl(urlElements)
-
+    const {urlElements , setUrlElement} = useSaveUrl()
+    
     
     return (
         <div className="min-h-screen bg-gray-50">

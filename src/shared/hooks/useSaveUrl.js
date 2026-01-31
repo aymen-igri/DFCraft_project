@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react"
 import UrlContext from "../context/urlContext";
+import { browserAPI } from "../utils/browserAPI";
 
 
 const useSaveUrl =()=>{
@@ -7,8 +8,8 @@ const useSaveUrl =()=>{
       const { urlElements, setUrlElement } = useContext(UrlContext)
       useEffect(()=>{
            
-            function saveUrl(){
-                localStorage.setItem('urls' , JSON.stringify(urlElements))  
+            async function saveUrl(){
+                await browserAPI.storage.local.set({ urls: urlElements });
             }
     
             saveUrl()
