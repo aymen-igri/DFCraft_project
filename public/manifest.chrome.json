@@ -46,7 +46,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "staticPages/blocked.html"
+        "staticPages/blocked.html" ,
         "sounds/*.wav", 
         "offscreen.html", 
         "offscreen.js"

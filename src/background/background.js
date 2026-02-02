@@ -79,11 +79,6 @@ import { loadTimer, startTimerLoop, setupTimerListener } from './timeWorker.js';
           }),
       },
       action: chrome.action || chrome.browserAction,
-            new Promise((resolve) => chrome.storage.local.get(keys, resolve)),
-          set: (items) =>
-            new Promise((resolve) => chrome.storage.local.set(items, resolve)),
-        },
-      },
       action: chrome.action || chrome.browserAction,
       offscreen: chrome.offscreen, // Add this
       notifications: chrome.notifications,

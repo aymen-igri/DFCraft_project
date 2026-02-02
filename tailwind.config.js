@@ -17,6 +17,7 @@ export default {
         lightProgressBar: "#6D00D8",
         lightSelectedBar: "#B46CFA",
         lightPlaceHolder: "#9D72C7",
+        lightFontText: '#000000' , 
 
         // Dark mode colors
         dark: "#161616",
@@ -27,6 +28,11 @@ export default {
         darkProgressBar: "#B46CFA",
         darkSelectedBar: "#5A00B0",
         darkPlaceHolder: "#9D72C7",
+        darkFontText: '#FFFFFF', 
+
+        // AccentColor 
+        
+        
       },
     },
   },

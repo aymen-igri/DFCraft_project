@@ -17,11 +17,10 @@ const InputAddUrl = ({ elements, setElement }) => {
             ]);
             setValue("");
         }
-        console.log("Ce url deja exsite ");
     }
 
     return (
-        <div className="my-4">
+        <div className="my-4 w-[100%]">
             <InputAdd value={value} setValue={setValue} addElement={addElement} />
         </div>
     );

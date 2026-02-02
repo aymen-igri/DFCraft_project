@@ -11,7 +11,8 @@ const InputAdd = ({ value, setValue, addElement }) => {
                     addElement(value);
                 }
              }}
-             className="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-300"
+             placeholder="Add url"
+             className=" p-2 rounded-xl w-[100%] focus:outline-none border-[3px]  border-blue-300 dark:border-none  "
         />
     );
 };
