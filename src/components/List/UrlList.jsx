@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 const UrlList = ({ urlElements, setUrlElements }) => {
     if (urlElements.length === 0)
         return (<div className="text-center p-4">Aucun url est définie</div>);
+    console.log("urlElements", urlElements)
     return (
         <div className="my-4">
             <List ItemComponent={UrlItem} items={urlElements} setItems={setUrlElements} />

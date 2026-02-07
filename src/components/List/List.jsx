@@ -1,4 +1,5 @@
 const List = ({ ItemComponent, items, setItems = null }) => {
+    console.log("items", items)
     return (
         <div className="space-y-4">
             {items.map((element) => (
