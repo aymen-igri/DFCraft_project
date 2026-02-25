@@ -29,7 +29,9 @@ let timerData = {
   originalTime: 1500,
   workTime: 1500,
   breakTime: 300,
+  longBreakTime: 900,
   phaseType: "work",
+  sessionCount: 0,
 };
 
 // Load saved state
@@ -281,13 +283,21 @@ setInterval(() => {
       .catch(() => {});
   } else if (timerData.time === 0 && timerData.isRunning) {
     // Timer hit 0, switch phases
-    if (timerData.phaseType === "work" && timerData.breakTime > 0) {
-      timerData.phaseType = "break";
-      timerData.time = timerData.breakTime;
-      timerData.originalTime = timerData.breakTime;
+    if (timerData.phaseType === "work") {
+      timerData.sessionCount++;
+      
+      if (timerData.sessionCount % 4 === 0 && timerData.longBreakTime > 0) {
+        timerData.phaseType = "longBreak";
+        timerData.time = timerData.longBreakTime;
+        timerData.originalTime = timerData.longBreakTime;
+        console.log("Switching to long break phase:", timerData.longBreakTime);
+      } else if (timerData.breakTime > 0) {
+        timerData.phaseType = "break";
+        timerData.time = timerData.breakTime;
+        timerData.originalTime = timerData.breakTime;
+        console.log("Switching to break phase:", timerData.breakTime);
+      }
       timerData.lastUpdate = Date.now();
-      console.log("Switching to break phase:", timerData.breakTime);
-
       playSound("notification");
     } else if (timerData.phaseType === "break" && timerData.workTime > 0) {
       timerData.phaseType = "work";
@@ -295,7 +305,14 @@ setInterval(() => {
       timerData.originalTime = timerData.workTime;
       timerData.lastUpdate = Date.now();
       console.log("Switching to work phase:", timerData.workTime);
-
+      playSound("notification");
+    } else if (timerData.phaseType === "longBreak" && timerData.workTime > 0) {
+      timerData.sessionCount = 0;
+      timerData.phaseType = "work";
+      timerData.time = timerData.workTime;
+      timerData.originalTime = timerData.workTime;
+      timerData.lastUpdate = Date.now();
+      console.log("Switching to work phase:", timerData.workTime);
       playSound("notification");
     } else {
       // No break/work time set, just stop
