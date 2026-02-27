@@ -110,6 +110,11 @@ export default function Timer() {
       </>
     );
   };
+  // just for test 
+  const BlockedItem = {
+    sownd : true ,
+    acces : true 
+  }
 
   // for reseting the timer
   useEffect(() => {
