@@ -1,5 +1,4 @@
 import {  use, useEffect, useRef, useState } from "react";
-import InputAdd from "./InputAdd";
 
 const InputAddUrl = ({ elements, setElement , setShowAddInput , showAddInput }) => {
     const [value, setValue] = useState("");
@@ -25,7 +24,7 @@ const InputAddUrl = ({ elements, setElement , setShowAddInput , showAddInput }) 
     }
 
     return (
-        <div className="my-4 w-[100%]">
+        <div className="my-4 w-[100%] mb-[11px] ">
             <input
                 value={value}
                 onClick={(e)=> e.stopPropagation()}
@@ -38,7 +37,7 @@ const InputAddUrl = ({ elements, setElement , setShowAddInput , showAddInput }) 
                 }}
                 onBlur={handleBlur}
                 placeholder="Add url"
-                className=" p-2 rounded-xl w-[100%] focus:outline-none border-[3px]  border-blue-300 dark:border-none  "
+                className=" p-2 rounded-xl  text-black text-[11px] w-[100%] focus:outline-none border-[3px]  border-blue-300 dark:border-none h-[30px]  "
             />
         </div>
     );
