@@ -10,13 +10,13 @@ export default function Phases() {
           {phaseType === "work" ? "Work" : phaseType === "break" ? "Break" : "Long Break"}
         </p>
         <div className="p-2 mx-5 rounded-full flex flex-row justify-center gap-6 items-center">
-          <div className={`bg-${sessionCount === 1 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
+          <div className={`bg-${sessionCount >= 1 ? 'darkPoints' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
           </div>
-          <div className={`bg-${sessionCount === 2 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
+          <div className={`bg-${sessionCount >= 2 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
           </div>
-          <div className={`bg-${sessionCount === 3 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
+          <div className={`bg-${sessionCount >= 3 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
           </div>
-          <div className={`bg-${sessionCount === 4 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
+          <div className={`bg-${sessionCount >= 4 ? 'darkElements' : 'lightElements'} dark:bg-darkElements w-2 h-2 rounded-full`}>
           </div>
         </div>
       </div>
