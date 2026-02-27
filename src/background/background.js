@@ -225,14 +225,25 @@ browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true; // Keep channel open for async response
 });
 
-// Notification sound player for the timer
+let _audioCtx = null;
+
+function getAudioContext() {
+  if (!_audioCtx || _audioCtx.state === "closed") {
+    _audioCtx = new AudioContext();
+  }
+  if (_audioCtx.state === "suspended") {
+    _audioCtx.resume();
+  }
+  return _audioCtx;
+}
+
 async function playSound(soundName) {
   try {
-    // Check if offscreen API exists (Chrome only)
+    // ── Chrome path (offscreen document) ──────────────────────
     if (browserAPI.offscreen) {
       const existingContexts = await browserAPI.runtime.getContexts({});
       const offscreenDocument = existingContexts.find(
-        (context) => context.contextType === "OFFSCREEN_DOCUMENT",
+        (c) => c.contextType === "OFFSCREEN_DOCUMENT",
       );
 
       if (!offscreenDocument) {
@@ -247,20 +258,61 @@ async function playSound(soundName) {
         type: "PLAY_SOUND",
         soundUrl: browserAPI.runtime.getURL(`sounds/${soundName}.wav`),
       });
-    } else {
-      // Firefox fallback
+
+      return; // ← done for Chrome
+    }
+
+    const formats = [`sounds/${soundName}.wav`, `sounds/${soundName}.mp3`];
+
+    let arrayBuffer = null;
+    let lastError = null;
+
+    for (const fmt of formats) {
+      try {
+        const url = browserAPI.runtime.getURL(fmt);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} for ${url}`);
+        }
+
+        arrayBuffer = await response.arrayBuffer();
+        break; // success — stop trying other formats
+      } catch (err) {
+        lastError = err;
+        console.warn(`[BG] Could not load ${fmt}:`, err);
+      }
+    }
+
+    if (!arrayBuffer) {
+      throw lastError ?? new Error("All audio formats failed to load");
+    }
+
+    const ctx = getAudioContext();
+    const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+    const source = ctx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(ctx.destination);
+    source.start(0);
+
+    console.log(`[BG] ✅ Firefox notification sound played: ${soundName}`);
+
+  } catch (error) {
+    console.error("[BG] playSound failed:", error);
+
+    // ── Last-resort HTML5 Audio fallback ─────────────────────
+    // Works in some Firefox configurations; harmless if it fails.
+    try {
       const audio = new Audio(
         browserAPI.runtime.getURL(`sounds/${soundName}.wav`),
       );
-      audio.play().catch((err) => {
-        console.error("Firefox audio playback failed:", err);
-      });
+      await audio.play();
+    } catch (fallbackErr) {
+      console.error("[BG] HTML5 Audio fallback also failed:", fallbackErr);
     }
-  } catch (error) {
-    console.error("Failed to play sound:", error);
   }
 }
-
 // Timer loop
 // In background.js, inside the timer loop:
 setInterval(() => {
