@@ -20,23 +20,23 @@ export default function Timer() {
     setPhaseType,
   } = useTimer();
 
-  const [min, setMin] = useState(Math.floor(time / 60));
-  const [bMin, setBMin] = useState(Math.floor(breakTime / 60));
-  const [lbMin, setLBMin] = useState(Math.floor(longBreakTime / 60));
+  const [min, setMin] = useState(Math.floor(time || 0 / 60));
+  const [bMin, setBMin] = useState(Math.floor(breakTime || 0 / 60));
+  const [lbMin, setLBMin] = useState(Math.floor(longBreakTime || 0 / 60));
   const [desable, setDesable] = useState(true);
   const [pause, setPause] = useState(false);
 
   useEffect(() => {
     if (!isRunning) {
-      setMin(Math.floor(originalTime / 60));
-      setBMin(Math.floor(breakTime / 60));
-      setLBMin(Math.floor(longBreakTime / 60));
+      setMin(Math.floor(originalTime || 0 / 60));
+      setBMin(Math.floor(breakTime || 0 / 60));
+      setLBMin(Math.floor(longBreakTime || 0 / 60));
     }
   }, [time, isRunning, originalTime, breakTime, longBreakTime]);
 
   const formatTime = (s) => {
-    const min = Math.floor(s / 60);
-    const sec = s % 60;
+    const min = Math.floor(s || 0 / 60);
+    const sec = (s || 0)% 60;
     return `${min}:${sec.toString().padStart(2, "0")}`;
   };
 
@@ -54,7 +54,7 @@ export default function Timer() {
       setPhaseType("work");
 
       // Read work time from inputs
-      const validMin = Math.max(0, Math.floor(min));
+      const validMin = Math.max(0, Math.floor(min || 0));
       const validWorkTime = validMin * 60;
 
       // Read break time from inputs

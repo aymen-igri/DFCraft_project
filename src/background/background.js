@@ -1,6 +1,5 @@
 // background.js
 import { blockWorker } from "./blockerWorker.js";
-import { loadTimer, startTimerLoop, setupTimerListener } from "./timeWorker.js";
 
 const browserAPI = (() => {
   if (typeof browser !== "undefined" && browser.runtime) {
@@ -107,21 +106,20 @@ const browserAPI = (() => {
   };
 })();
 
+let isStorageLoaded = false;
+
 async function init() {
-  await loadTimer();
-
-  // 2️⃣ Installer le listener spécifique au timer
-  setupTimerListener();
-
-  // 3️⃣ Démarrer la boucle du timer
-
-  startTimerLoop();
+  const result = await browserAPI.storage.local.get(["timerData"]);
+  if (result.timerData) {
+    timerData = result.timerData;
+    updateTimerFromLastSave();
+  }
   blockWorker();
-
-  console.log("C'est le background    .........");
+  console.log("Background initialized and BlockerWorker started.");
 }
 
 init();
+
 let offscreenReady = false;
 let offscreenReadyTs = 0;
 
@@ -139,16 +137,20 @@ let timerData = {
 
 // Load saved state
 browserAPI.storage.local.get(["timerData"]).then((result) => {
-  if (result.timerData) {
-    timerData = result.timerData;
+  if (result.timerData && Object.keys(result.timerData).length > 0) {
+    timerData = { ...timerData, ...result.timerData };
     updateTimerFromLastSave();
   }
+  isStorageLoaded = true; // <--- CHANGE STATUS HERE
+  console.log("✅ Storage loading complete");
 });
 
 function updateTimerFromLastSave() {
-  if (timerData.isRunning && timerData.time > 0) {
+  if (timerData.isRunning && timerData.time > 0 && timerData.lastUpdate > 0) {
     const now = Date.now();
-    const secondsPassed = Math.floor((now - timerData.lastUpdate) / 1000);
+    const secondsPassed = Math.floor(
+      (now - (timerData.lastUpdate || now)) / 1000,
+    );
     const oldTime = timerData.time;
     timerData.time = Math.max(0, timerData.time - secondsPassed);
     timerData.lastUpdate = now;
@@ -170,195 +172,211 @@ let firefoxListeners = null;
 let firefoxTimeInterval = null;
 
 // Message listener
-browserAPI.runtime.onMessage.addListener( async (request, sender, sendResponse) => {
-  if (request.type === "GET_TIMER") {
-    updateTimerFromLastSave();
-    sendResponse(timerData);
-  } else if (request.type === "UPDATE_TIMER") {
-    const oldData = { ...timerData };
-    timerData = {
-      ...timerData,
-      ...request.data,
-      lastUpdate: Date.now(),
-    };
+browserAPI.runtime.onMessage.addListener(
+  async (request, sender, sendResponse) => {
+    if (request.type === "GET_TIMER") {
+      // If storage isn't ready, wait a tiny bit or send defaults
+      if (!isStorageLoaded) {
+        console.warn(
+          "⏳ GET_TIMER called before storage loaded, sending defaults",
+        );
+      }
+      updateTimerFromLastSave();
+      sendResponse(timerData);
+      return true; // Keep channel open
+    } else if (request.type === "UPDATE_TIMER") {
+      const oldData = { ...timerData };
+      timerData = {
+        ...timerData,
+        ...request.data,
+        lastUpdate: Date.now(),
+      };
 
-    console.log("🔄 UPDATE:", {
-      before: oldData,
-      after: timerData,
-      changed: {
-        time: oldData.time !== timerData.time,
-        isRunning: oldData.isRunning !== timerData.isRunning,
-      },
-    });
-
-    saveTimerData();
-    sendResponse({ success: true });
-  }
-
-  if (request.type === "PLAY_AMBIENT_SOUND") {
-    currentAmbientAudio = request.soundUrl;
-    isAmbientPlaying = true;
-
-    // ✅ Now broadcast with the CORRECT currentSound
-    broadcastAudioStatus("loading", {
-      progress: 0,
-      currentSound: request.soundUrl, // Explicitly pass the new sound
-    });
-
-    playAmbientSound(request.soundUrl)
-      .then(() => {
-        sendResponse({ success: true });
-      })
-      .catch((e) => {
-        console.error("[BG] playAmbientSound failed:", e);
-        broadcastAudioStatus("error", { error: String(e) });
-        sendResponse({ success: false, error: String(e) });
+      console.log("🔄 UPDATE:", {
+        before: oldData,
+        after: timerData,
+        changed: {
+          time: oldData.time !== timerData.time,
+          isRunning: oldData.isRunning !== timerData.isRunning,
+        },
       });
-    return true;
-  }
 
-  if (request.type === "PAUSE_AMBIENT_SOUND") {
-    pauseAmbientSound();
-    isAmbientPlaying = false;
-    broadcastAudioStatus("paused");
-    sendResponse({ success: true });
-    return true;
-  }
+      saveTimerData();
+      sendResponse({ success: true });
+    }
 
-  if (request.type === "STOP_AMBIENT_SOUND") {
-    stopAmbientSound();
-    isAmbientPlaying = false;
-    currentAmbientAudio = null;
-    broadcastAudioStatus("stopped"); // Add this broadcast
-    sendResponse({ success: true });
-    return true;
-  }
+    if (request.type === "PLAY_AMBIENT_SOUND") {
+      currentAmbientAudio = request.soundUrl;
+      isAmbientPlaying = true;
 
-  if (request.type === "GET_AMBIENT_STATUS") {
-    if (browserAPI.offscreen) {
-      try {
+      // ✅ Now broadcast with the CORRECT currentSound
+      broadcastAudioStatus("loading", {
+        progress: 0,
+        currentSound: request.soundUrl, // Explicitly pass the new sound
+      });
+
+      playAmbientSound(request.soundUrl)
+        .then(() => {
+          sendResponse({ success: true });
+        })
+        .catch((e) => {
+          console.error("[BG] playAmbientSound failed:", e);
+          broadcastAudioStatus("error", { error: String(e) });
+          sendResponse({ success: false, error: String(e) });
+        });
+      return true;
+    }
+
+    if (request.type === "PAUSE_AMBIENT_SOUND") {
+      pauseAmbientSound();
+      isAmbientPlaying = false;
+      broadcastAudioStatus("paused");
+      sendResponse({ success: true });
+      return true;
+    }
+
+    if (request.type === "STOP_AMBIENT_SOUND") {
+      stopAmbientSound();
+      isAmbientPlaying = false;
+      currentAmbientAudio = null;
+      broadcastAudioStatus("stopped"); // Add this broadcast
+      sendResponse({ success: true });
+      return true;
+    }
+
+    if (request.type === "GET_AMBIENT_STATUS") {
+      if (browserAPI.offscreen) {
+        try {
+          browserAPI.runtime.sendMessage(
+            { type: "GET_AMBIENT_STATUS_OFFSCREEN" },
+            (response) => {
+              if (browserAPI.runtime.lastError) {
+                sendResponse({
+                  isPlaying: isAmbientPlaying,
+                  currentSound: currentAmbientAudio || null,
+                });
+              } else {
+                sendResponse(response);
+              }
+            },
+          );
+          return true;
+        } catch (e) {
+          console.error("GET_AMBIENT_STATUS error:", e);
+        }
+      }
+      if (!browserAPI.offscreen) {
+        sendResponse({
+          isPlaying: isAmbientPlaying,
+          currentSound: currentAmbientAudio || null,
+        });
+      }
+    }
+
+    if (request.type === "AUDIO_STATUS_FROM_OFFSCREEN") {
+      console.log("[BG] 📥 Status from offscreen:", request);
+
+      // ✅ Don't let offscreen clear the currentSound unless it's explicitly stopped
+      if (request.status === "stopped" || request.status === "error") {
+        isAmbientPlaying = false;
+        currentAmbientAudio = null;
+      } else {
+        isAmbientPlaying = request.isPlaying;
+        // Only update if offscreen provides a valid URL
+        if (request.currentSound) {
+          currentAmbientAudio = request.currentSound;
+        }
+      }
+
+      // Broadcast to popup
+      broadcastAudioStatus(request.status, {
+        progress: request.progress,
+        error: request.error,
+        currentSound: currentAmbientAudio,
+        currentTime: request.currentTime,
+        duration: request.duration,
+      });
+
+      sendResponse({ success: true });
+      return true; // ✅ Keep channel open
+    }
+
+    if (request.type === "OFFSCREEN_READY") {
+      offscreenReady = true;
+      offscreenReadyTs = Date.now();
+      console.log("[BG] received OFFSCREEN_READY from offscreen");
+      sendResponse({ ok: true });
+      return true;
+    }
+
+    if (request.type === "SEEK_TO_POSITION") {
+      if (browserAPI.offscreen) {
+        // Chrome - forward to offscreen
         browserAPI.runtime.sendMessage(
-          { type: "GET_AMBIENT_STATUS_OFFSCREEN" },
-          (response) => {
+          { type: "SEEK_TO_POSITION_OFFSCREEN", time: request.time },
+          (resp) => {
             if (browserAPI.runtime.lastError) {
-              sendResponse({
-                isPlaying: isAmbientPlaying,
-                currentSound: currentAmbientAudio || null,
-              });
+              console.error(
+                "[BG] Seek failed:",
+                browserAPI.runtime.lastError.message,
+              );
+              sendResponse({ success: false, error: "Seek failed" });
             } else {
-              sendResponse(response);
+              sendResponse(resp);
             }
           },
         );
-        return true;
-      } catch (e) {
-        console.error("GET_AMBIENT_STATUS error:", e);
+      } else if (firefoxAudio) {
+        // Firefox - seek directly
+        try {
+          firefoxAudio.currentTime = request.time;
+          sendResponse({ success: true });
+        } catch (e) {
+          sendResponse({ success: false, error: String(e) });
+        }
       }
-    }
-    if (!browserAPI.offscreen) {
-      sendResponse({
-        isPlaying: isAmbientPlaying,
-        currentSound: currentAmbientAudio || null,
-      });
-    }
-  }
-
-  if (request.type === "AUDIO_STATUS_FROM_OFFSCREEN") {
-    console.log("[BG] 📥 Status from offscreen:", request);
-
-    // ✅ Don't let offscreen clear the currentSound unless it's explicitly stopped
-    if (request.status === "stopped" || request.status === "error") {
-      isAmbientPlaying = false;
-      currentAmbientAudio = null;
-    } else {
-      isAmbientPlaying = request.isPlaying;
-      // Only update if offscreen provides a valid URL
-      if (request.currentSound) {
-        currentAmbientAudio = request.currentSound;
-      }
+      return true;
     }
 
-    // Broadcast to popup
-    broadcastAudioStatus(request.status, {
-      progress: request.progress,
-      error: request.error,
-      currentSound: currentAmbientAudio,
-      currentTime: request.currentTime,
-      duration: request.duration,
-    });
+    if (request.type === "UPDATE_TASK_STATS") {
+      const { subType, priority, amount, isCompleted } = request;
 
-    sendResponse({ success: true });
-    return true; // ✅ Keep channel open
-  }
-
-  if (request.type === "OFFSCREEN_READY") {
-    offscreenReady = true;
-    offscreenReadyTs = Date.now();
-    console.log("[BG] received OFFSCREEN_READY from offscreen");
-    sendResponse({ ok: true });
-    return true;
-  }
-
-  if (request.type === "SEEK_TO_POSITION") {
-    if (browserAPI.offscreen) {
-      // Chrome - forward to offscreen
-      browserAPI.runtime.sendMessage(
-        { type: "SEEK_TO_POSITION_OFFSCREEN", time: request.time },
-        (resp) => {
-          if (browserAPI.runtime.lastError) {
-            console.error(
-              "[BG] Seek failed:",
-              browserAPI.runtime.lastError.message,
-            );
-            sendResponse({ success: false, error: "Seek failed" });
-          } else {
-            sendResponse(resp);
-          }
-        },
-      );
-    } else if (firefoxAudio) {
-      // Firefox - seek directly
-      try {
-        firefoxAudio.currentTime = request.time;
-        sendResponse({ success: true });
-      } catch (e) {
-        sendResponse({ success: false, error: String(e) });
+      if (subType === "complete") {
+        console.warn(
+          `Updating task stats: ${isCompleted ? "Completing" : "Uncompleting"} a task with priority ${priority} (amount: ${amount})`,
+        );
+        await updateStats("tasksCompleted", amount);
+        await updateStats("tasksCompleted_" + priority, amount);
+        await updateStats("tasksPending", -amount);
+      } else if (subType === "delete") {
+        if (!isCompleted) {
+          await updateStats("tasksPending", -1);
+        } else {
+          console.warn(
+            "Decrementing completed count for priority",
+            "tasksCompleted_" + priority,
+          );
+          await updateStats("tasksCompleted", -1);
+          await updateStats("tasksCompleted_" + priority, -1);
+        }
+      } else if (subType === "create") {
+        console.warn("Incrementing created and pending task counts");
+        await updateStats("tasksCreated", amount);
+        await updateStats("tasksPending", amount);
+      } else if (subType === "edit") {
+        console.warn(
+          `Editing task priority from ${request.prevPriority} to ${request.newPriority}`,
+        );
+        if (request.isCompleted) {
+          await updateStats("tasksCompleted_" + request.prevPriority, -1);
+          await updateStats("tasksCompleted_" + request.newPriority, 1);
+        }
       }
     }
-    return true;
-  }
 
-  if (request.type === "UPDATE_TASK_STATS") {
-    const { subType, priority, amount, isCompleted } = request;
-
-    if (subType === "complete") {
-      console.warn(`Updating task stats: ${isCompleted ? "Completing" : "Uncompleting"} a task with priority ${priority} (amount: ${amount})`);
-      await updateStats("tasksCompleted", amount);
-      await updateStats("tasksCompleted_" + priority, amount);
-      await updateStats("tasksPending", -amount);
-    }else if (subType === "delete") {
-      if (!isCompleted){
-        await updateStats("tasksPending", -1);
-      }else{
-        console.warn("Decrementing completed count for priority", "tasksCompleted_" + priority);
-        await updateStats("tasksCompleted", -1);
-        await updateStats("tasksCompleted_" + priority, -1);
-      }
-    }else if (subType === "create") {
-      console.warn("Incrementing created and pending task counts");
-      await updateStats("tasksCreated", amount);
-      await updateStats("tasksPending", amount);
-    }else if(subType === "edit") {
-      console.warn(`Editing task priority from ${request.prevPriority} to ${request.newPriority}`);
-      if (request.isCompleted) {
-        await updateStats("tasksCompleted_" + request.prevPriority, -1);
-        await updateStats("tasksCompleted_" + request.newPriority, 1);
-      }
-    }
-  }
-
-  return true; // Keep channel open for async response
-});
+    return true; // Keep channel open for async response
+  },
+);
 
 let _audioCtx = null;
 
@@ -894,6 +912,8 @@ export async function updateStats(type, amount = 1) {
     tasksCompleted_low: 0,
     days: [],
   };
+
+  if (!stats.days) stats.days = [];
 
   let todayStats = stats.days.find((d) => d.date === today);
   if (!todayStats) {
