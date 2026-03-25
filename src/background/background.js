@@ -106,8 +106,6 @@ const browserAPI = (() => {
   };
 })();
 
-let isStorageLoaded = false;
-
 async function init() {
   const result = await browserAPI.storage.local.get(["timerData"]);
   if (result.timerData) {
@@ -137,20 +135,16 @@ let timerData = {
 
 // Load saved state
 browserAPI.storage.local.get(["timerData"]).then((result) => {
-  if (result.timerData && Object.keys(result.timerData).length > 0) {
-    timerData = { ...timerData, ...result.timerData };
+  if (result.timerData) {
+    timerData = result.timerData;
     updateTimerFromLastSave();
   }
-  isStorageLoaded = true; // <--- CHANGE STATUS HERE
-  console.log("✅ Storage loading complete");
 });
 
 function updateTimerFromLastSave() {
-  if (timerData.isRunning && timerData.time > 0 && timerData.lastUpdate > 0) {
+  if (timerData.isRunning && timerData.time > 0) {
     const now = Date.now();
-    const secondsPassed = Math.floor(
-      (now - (timerData.lastUpdate || now)) / 1000,
-    );
+    const secondsPassed = Math.floor((now - timerData.lastUpdate) / 1000);
     const oldTime = timerData.time;
     timerData.time = Math.max(0, timerData.time - secondsPassed);
     timerData.lastUpdate = now;
@@ -173,17 +167,11 @@ let firefoxTimeInterval = null;
 
 // Message listener
 browserAPI.runtime.onMessage.addListener(
-  async (request, sender, sendResponse) => {
+  (request, sender, sendResponse) => {
     if (request.type === "GET_TIMER") {
-      // If storage isn't ready, wait a tiny bit or send defaults
-      if (!isStorageLoaded) {
-        console.warn(
-          "⏳ GET_TIMER called before storage loaded, sending defaults",
-        );
-      }
       updateTimerFromLastSave();
       sendResponse(timerData);
-      return true; // Keep channel open
+      return false;
     } else if (request.type === "UPDATE_TIMER") {
       const oldData = { ...timerData };
       timerData = {
@@ -203,6 +191,7 @@ browserAPI.runtime.onMessage.addListener(
 
       saveTimerData();
       sendResponse({ success: true });
+      return false;
     }
 
     if (request.type === "PLAY_AMBIENT_SOUND") {
@@ -341,37 +330,37 @@ browserAPI.runtime.onMessage.addListener(
     if (request.type === "UPDATE_TASK_STATS") {
       const { subType, priority, amount, isCompleted } = request;
 
-      if (subType === "complete") {
+      (async () => {if (subType === "complete") {
         console.warn(
           `Updating task stats: ${isCompleted ? "Completing" : "Uncompleting"} a task with priority ${priority} (amount: ${amount})`,
         );
-        await updateStats("tasksCompleted", amount);
-        await updateStats("tasksCompleted_" + priority, amount);
-        await updateStats("tasksPending", -amount);
+         await  updateStats("tasksCompleted", amount);
+         await updateStats("tasksCompleted_" + priority, amount);
+         await updateStats("tasksPending", -amount);
       } else if (subType === "delete") {
         if (!isCompleted) {
-          await updateStats("tasksPending", -1);
+           await updateStats("tasksPending", -1);
         } else {
           console.warn(
             "Decrementing completed count for priority",
             "tasksCompleted_" + priority,
           );
-          await updateStats("tasksCompleted", -1);
-          await updateStats("tasksCompleted_" + priority, -1);
+           await updateStats("tasksCompleted", -1);
+           await updateStats("tasksCompleted_" + priority, -1);
         }
       } else if (subType === "create") {
         console.warn("Incrementing created and pending task counts");
-        await updateStats("tasksCreated", amount);
-        await updateStats("tasksPending", amount);
+         await updateStats("tasksCreated", amount);
+         await updateStats("tasksPending", amount);
       } else if (subType === "edit") {
         console.warn(
           `Editing task priority from ${request.prevPriority} to ${request.newPriority}`,
         );
         if (request.isCompleted) {
-          await updateStats("tasksCompleted_" + request.prevPriority, -1);
-          await updateStats("tasksCompleted_" + request.newPriority, 1);
+           await updateStats("tasksCompleted_" + request.prevPriority, -1);
+           await updateStats("tasksCompleted_" + request.newPriority, 1);
         }
-      }
+      }})
     }
 
     return true; // Keep channel open for async response
@@ -912,7 +901,7 @@ export async function updateStats(type, amount = 1) {
     tasksCompleted_low: 0,
     days: [],
   };
-
+  
   if (!stats.days) stats.days = [];
 
   let todayStats = stats.days.find((d) => d.date === today);

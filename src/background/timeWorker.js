@@ -1,9 +1,15 @@
 import { browserAPI } from "../shared/utils/browserAPI";
 
 export let timerData = {
-  time: 60,
+  time: 1500,
   isRunning: false,
-  lastUpdate: Date.now()
+  lastUpdate: Date.now(),
+  originalTime: 1500,
+  workTime: 1500,
+  breakTime: 300,
+  longBreakTime: 900,
+  phaseType: "work",
+  sessionCount: 0,
 };
 
 // Charger l’état sauvegardé
@@ -51,23 +57,23 @@ export function setupTimerListener() {
 }
 
 // Boucle du timer
-export function startTimerLoop() {
-  setInterval(() => {
-    if (timerData.isRunning && timerData.time > 0) {
-      timerData.time--;
-      timerData.lastUpdate = Date.now();
-      saveTimerData();
+// export function startTimerLoop() {
+//   setInterval(() => {
+//     if (timerData.isRunning && timerData.time > 0) {
+//       timerData.time--;
+//       timerData.lastUpdate = Date.now();
+//       saveTimerData();
 
-      // Mettre à jour badge
-      if (browserAPI.action && browserAPI.action.setBadgeText) {
-        browserAPI.action.setBadgeText({ text: String(timerData.time) });
-      }
+//       // Mettre à jour badge
+//       if (browserAPI.action && browserAPI.action.setBadgeText) {
+//         browserAPI.action.setBadgeText({ text: String(timerData.time) });
+//       }
 
-      // Notifier les pages ouvertes
-      browserAPI.runtime.sendMessage({
-        type: 'TIMER_TICK',
-        data: timerData
-      }).catch(() => {});
-    }
-  }, 1000);
-}
+//       // Notifier les pages ouvertes
+//       browserAPI.runtime.sendMessage({
+//         type: 'TIMER_TICK',
+//         data: timerData
+//       }).catch(() => {});
+//     }
+//   }, 1000);
+// }
