@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import {
   CirclePlay,
-  ChevronDown,
   LoaderCircle,
   CirclePause,
 } from "lucide-react";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import config from "../../shared/constants/config";
 import axios from "axios";
+import { useSettings } from "../../shared/context/SettingsContext";
 
 export default function EasySoundPlayer() {
   const soundsURL = config.SoundLibraryApi;
   const [sounds, setSounds] = useState([]);
   const [sound, setSound] = useState(null);
-  const [expend, setExpent] = useState(false);
+  const { settings } = useSettings();
   const { currentSound, buffering, loading, isPlaying, play, pause } =
     useBackgroundAudio();
 
@@ -104,7 +104,7 @@ export default function EasySoundPlayer() {
     <div className="bg-lightElements dark:bg-darkElements px-6 py-3 my-5 mx-14 rounded-3xl transition-all duration-300 ease-in-out overflow-hidden">
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row justify-center items-center">
-          <img src={sound?.coverImage} className="w-10 h-10 rounded-lg mr-2" />
+          <img src={sound?.coverImage} className={`w-10 h-10 rounded-lg ${settings.language === "ar" ? "ml-2" : "mr-2"}`} />
           <div className="mb-1">
             <div className="text-light dark:text-dark text-lg">
               {sound.title.length > 14

@@ -9,5 +9,6 @@ export default function HomePage() {
       <Phases />
       <EasyTasks />
       <EasySoundPlayer />
+      <div className="h-4 w-full"></div>
     </>)
 }
