@@ -95,6 +95,12 @@ export const browserAPI = (() => {
           removeListener: (cb) => chrome.tabs.onUpdated.removeListener(cb),
         },
       },
+      i18n: {
+        getUILanguage: () =>
+          typeof chrome !== "undefined"
+            ? chrome.i18n.getUILanguage()
+            : browser.i18n.getUILanguage(),
+      },
       action: chrome.action || chrome.browserAction,
       notifications: chrome.notifications,
     };

@@ -966,6 +966,8 @@ function applyTheme(theme) {
   renderAllCharts(globalData);
 }
 
+let currentUserLanguage = browserAPI.i18n.getUILanguage();
+console.warn("Current user language:", currentUserLanguage);
 // for language changes selection
 let currentLang = localStorage.getItem("settings.language") || "en";
 

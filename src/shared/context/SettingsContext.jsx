@@ -1,15 +1,22 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { browserAPI } from '../utils/browserAPI';
 
 const SettingsContext = createContext();
 
+const browserLang = browserAPI.i18n.getUILanguage().split('-')[0];
+const supportedLanguages = ['en', 'fr', 'ar'];
+const initialLang = supportedLanguages.includes(browserLang) ? browserLang : 'en';
+
 const DEFAULT_SETTINGS = {
   notifications: true,
-  language: 'fr',
+  language: initialLang,
   font: 'concert',
   fontSize: 'medium',
   primaryColor: 'purple',
-  darkMode: false,
+  darkMode: true,
 };
+
+console.warn(DEFAULT_SETTINGS);
 
 // ⚠️ The purple theme MUST exactly match the hardcoded values in tailwind.config.js.
 // Since purple uses no data-theme override, Tailwind's values are what actually render.
