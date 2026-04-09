@@ -71,6 +71,31 @@ header {
   border-radius: 10px;
 }
 
+.warn_section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  border-radius: 15px;
+  margin-top: 80px;
+  margin-right: 60px;
+  margin-left: 60px;
+  border: 3px solid var(--bg);
+}
+
+.warn_img {
+  display: block;
+  width: 400px;
+  height: 400px;
+}
+
+.warn_text {
+  max-width: 600px;
+  color: var(--accent);
+  font-size: 40px;
+}
+
 .Logo {
   width: 15%;
   height: auto;
@@ -117,7 +142,8 @@ header {
 /* invisible select over the icon */
 #language-select {
   position: absolute;
-  left: 0; /* align with svg */
+  left: 0;
+  /* align with svg */
   top: 0;
   width: 35px;
   height: 35px;
@@ -249,7 +275,7 @@ header {
 
 /* for all the graphs */
 
-.chart{
+.chart {
   display: flex;
   align-items: center;
   justify-content: center;

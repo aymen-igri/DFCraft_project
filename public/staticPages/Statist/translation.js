@@ -25,6 +25,8 @@ const translations =  {
       medium: "Moyen",
       low: "Bas",
       blockedPagesTitle: "Analyse des pages bloquées",
+      warn_title: "Bienvenue sur votre tableau de bord",
+      warn_message: "Utilisez l'extension pour voir votre progression !",
     },
     en: {
       card1: "Today's focus",
@@ -52,7 +54,8 @@ const translations =  {
       medium: "Medium",
       low: "Low",
       blockedPagesTitle: "Blocked Pages Analysis",
-
+      warn_title: "Welcome to your dashboard",
+      warn_message: "Use The extension to see your progress!",
     },
     ar: {
       card1: "تركيز اليوم",
@@ -80,5 +83,7 @@ const translations =  {
       medium: "متوسطة",
       low: "منخفضة",
       blockedPagesTitle: "تحليل الصفحات المحظورة",
+      warn_title: "مرحبًا بك في لوحة التحكم الخاصة بك",
+      warn_message: "استخدم الامتداد لرؤية تقدمك!",
     }
   }

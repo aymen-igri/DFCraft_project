@@ -37,6 +37,15 @@ async function initStatisticsPage() {
   const result = await browserAPI.storage.local.get(["statistics"]);
   globalData = result.statistics;
 
+  if (!globalData || !globalData.days || globalData.days.length === 0) {
+    document.querySelector("main.Cards").style.display = "none";
+    document.querySelector(".Chart").style.display = "none";
+    document.querySelector(".Timeframe").style.display = "none";
+    document.querySelectorAll(".chart").forEach(el => el.style.display = "none");
+    document.getElementById("no-data").style.display = "flex";
+    return;
+  }
+
   if (globalData && globalData.days) {
     const today = new Date().toISOString().split("T")[0];
     const todayStats = globalData.days.find((d) => d.date === today) || {};
@@ -1007,6 +1016,12 @@ function applyLanguage(lang) {
   document.querySelectorAll(".timeLable").forEach((el, i) => {
     el.textContent = t.timeframes[i];
   });
+
+  // No Data section
+  const warnTitle = document.querySelector("#no-data .warn_text .title");
+  const warnMessage = document.querySelector("#no-data .warn_text .message");
+  if (warnTitle && t.warn_title) warnTitle.textContent = t.warn_title;
+  if (warnMessage && t.warn_message) warnMessage.textContent = t.warn_message;
 
   // Save and re-render charts with new labels
   currentLang = lang;
