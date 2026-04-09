@@ -8,6 +8,9 @@ const browserAPI = (() => {
             new Promise((resolve) => chrome.storage.local.get(keys, resolve)),
         },
       },
+      i18n: {
+          getUILanguage: () => "en" // A safe default for testing
+      },
     };
   }
   return { storage: { local: { get: () => Promise.resolve({}) } } };
@@ -17,6 +20,18 @@ let theme = localStorage.getItem("theme") || "light";
 let globalData = null;
 let devidedData = [];
 const timeFrame = [7, 30, 90, 180];
+
+function updateDividedData(index) {
+  const numDays = timeFrame[index];
+  if (globalData && globalData.days) {
+    const sortedDays = [...globalData.days].sort(
+      (a, b) => new Date(b.date) - new Date(a.date),
+    );
+    devidedData = sortedDays.slice(0, numDays).reverse();
+    renderDependedCharts();
+  }
+}
+
 
 async function initStatisticsPage() {
   const result = await browserAPI.storage.local.get(["statistics"]);

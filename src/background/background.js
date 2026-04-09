@@ -360,7 +360,7 @@ browserAPI.runtime.onMessage.addListener(
            await updateStats("tasksCompleted_" + request.prevPriority, -1);
            await updateStats("tasksCompleted_" + request.newPriority, 1);
         }
-      }})
+      }})();
     }
 
     return true; // Keep channel open for async response
