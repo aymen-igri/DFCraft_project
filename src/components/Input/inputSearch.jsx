@@ -17,12 +17,6 @@ function InputSearch({ Element, setSearchedElement, value, setValue }) {
         value={value}
         onClick={(e) => e.stopPropagation()}
         onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            console.log("Le key est Enter est presse");
-            addElement(value);
-          }
-        }}
         placeholder="Add url"
         className={`p-2 mr-2 rounded-lg bg-lightList dark:bg-darkList ${value ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none ml-6`}
     />

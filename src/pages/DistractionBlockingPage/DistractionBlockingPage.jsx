@@ -1,26 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import InputAddUrl from "../../components/Input/InputAddUrl";
 import UrlList from "../../components/List/UrlList";
-import SelectUrlState from "../../components/MultiSelect/SelectUrlState";
-import { Shield, Trash, ListFilter, Plus } from "lucide-react";
-import { X } from "lucide-react";
+import {Trash, ListFilter, Plus } from "lucide-react";
 import useSaveUrl from "../../shared/hooks/useSaveUrl";
-import InputSearch from "../../components/Input/inputSearch";
 import DisplayBlockTypes from "../../components/DisplayBlockTypes/DisplayBlockTypes";
 import { useTranslation } from "../../shared/i18n/translations";
 import { useSettings } from "../../shared/context/SettingsContext";
 
 const DistractionBlockingPage = () => {
-  const [showDialog, setShowDialog] = useState(false);
   const [showAddSection, setShowAddSection] = useState(false);
   const [selectedElement, setSelectedElement] = useState([]);
-  const [searchedElement, setsearchedElement] = useState([]);
   const [isDelete, setisDelete] = useState(false);
   const [searchedValue, setSearchedValue] = useState("");
   const [showBlockTypes, setShowBlockTypes] = useState(false);
   const [selectedBlockTypes, setSelectedBlockTypes] = useState("all");
   const { urlElements, setUrlElement } = useSaveUrl();
-  const [isShaking, setIsShaking] = useState(false);
   const { settings } = useSettings();
   const { t } = useTranslation("blockPages");
 
@@ -46,12 +40,6 @@ const DistractionBlockingPage = () => {
     return filteredElements;
   }, [searchedValue, selectedBlockTypes, urlElements]);
 
-  const handleClick = () => {
-    setIsShaking(true);
-    // On retire la classe après la fin de l'animation (200ms)
-    setTimeout(() => setIsShaking(false), 200);
-  };
-
   function handleDelete() {
     setUrlElement((prv) =>
       prv.filter((item) => !selectedElement.includes(item)),
@@ -76,12 +64,6 @@ const DistractionBlockingPage = () => {
           value={searchedValue}
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => setSearchedValue(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              console.log("Le key est Enter est presse");
-              addElement(searchedValue);
-            }
-          }}
           placeholder={t("SplaceHolder")}
           className={`p-2 ${settings.language === "ar" ? "mr-6 ml-2 " : "ml-6 mr-2"} rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none`}
         />

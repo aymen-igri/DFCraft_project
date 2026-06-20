@@ -17,6 +17,7 @@ export default function Body({ choosenPage }) {
       case "tracking":
         browserAPI.tabs.create({ url: browserAPI.runtime.getURL("staticPages/statist.html") });
         window.close();
+        break;
       case "sounds":
         return <SoundPlayerPage/>;
       case "distractionBlocking":

@@ -394,7 +394,8 @@
       "none": "Aucun",
       "bType": "Type de blockage:",
       "Atitle": "Entrez une URL de page:",
-      "SplaceHolder": "Search for a URL page"
+      "SplaceHolder": "Rechercher une URL de page",
+      "existance": "URL non trouvé"
     },
     "en": {
       "add": "Add a page URL",

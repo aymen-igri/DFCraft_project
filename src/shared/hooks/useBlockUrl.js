@@ -2,38 +2,24 @@ import { useContext, useEffect } from "react"
 import UrlContext from "../context/urlContext";
 import { browserAPI } from "../utils/browserAPI"
 
-
-
 const useBlockUrl = (BlockedItem , isRunning ) => {
     const { urlElements, setUrlElement } = useContext(UrlContext)
     console.log("useBlockUrl called with BlockedItem:", BlockedItem, "isRunning:", isRunning);
     useEffect(() => {
-        urlElements.forEach(async (element, index) => {
-            
-         if(isRunning)  { 
-            
-            if(BlockedItem.sownd){
-                await blockSound(element)
-            }
-            
-            if(BlockedItem.acces){
-                await blockAccess(element);
-            }
-        }
-
+        if (!isRunning) return;
+        urlElements.forEach(element => {
+            if (BlockedItem.sownd) blockSound(element);
+            if (BlockedItem.acces) blockAccess(element);
+        });
         
-        return ()=>{
-            
-            dispatcher(isRunning , BlockedItem)
-        }
-
-        }
-    );
-
-    }, [urlElements , BlockedItem , isRunning]);
-
-
-    
+        return () => {
+            browserAPI.runtime.sendMessage({
+                type: "BLOCK",
+                sownd: BlockedItem.sownd,
+                access: BlockedItem.acces,
+            });
+        };
+    }, [isRunning, BlockedItem, urlElements]);   
 }
 
 
@@ -43,11 +29,11 @@ async function dispatcher(isRunning , BlockedItem){
         try {
             const message = {
                 type : "BLOCK" , 
-                sownd : BlockedItem.sownd  ,
-                access : BlockedItem.acces 
+                sond : BlockedItem.sond  ,
+                access : BlockedItem.access 
 
             }
-            let response = await browserAPI.runtime.onMessage.sendMessage(message) ;
+            let response = await browserAPI.runtime.sendMessage(message) ;
             console.log("C'est la reponce " ,response)
             
         } catch (error) {

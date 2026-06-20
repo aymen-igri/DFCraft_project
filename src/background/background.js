@@ -1,6 +1,21 @@
 // background.js
 import { blockWorker } from "./blockerWorker.js";
 
+let offscreenReady = false;
+let offscreenReadyTs = 0;
+
+let timerData = {
+  time: 1500,
+  isRunning: false,
+  lastUpdate: Date.now(),
+  originalTime: 1500,
+  workTime: 1500,
+  breakTime: 300,
+  longBreakTime: 900,
+  phaseType: "work",
+  sessionCount: 0,
+};
+
 const browserAPI = (() => {
   if (typeof browser !== "undefined" && browser.runtime) {
     return browser;
@@ -83,7 +98,6 @@ const browserAPI = (() => {
           }),
       },
       action: chrome.action || chrome.browserAction,
-      action: chrome.action || chrome.browserAction,
       offscreen: chrome.offscreen, // Add this
       notifications: chrome.notifications,
     };
@@ -117,21 +131,6 @@ async function init() {
 }
 
 init();
-
-let offscreenReady = false;
-let offscreenReadyTs = 0;
-
-let timerData = {
-  time: 1500,
-  isRunning: false,
-  lastUpdate: Date.now(),
-  originalTime: 1500,
-  workTime: 1500,
-  breakTime: 300,
-  longBreakTime: 900,
-  phaseType: "work",
-  sessionCount: 0,
-};
 
 // Load saved state
 browserAPI.storage.local.get(["timerData"]).then((result) => {

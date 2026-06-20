@@ -129,7 +129,6 @@ try {
 
   const fontsDir = path.join(__dirname, "..", "public", "fonts");
   if (fs.existsSync(fontsDir)) {
-    fs.copySync(fontsDir, path.join(chromeDir, "fonts"));
     fs.copySync(fontsDir, path.join(firefoxDir, "fonts"));
   }
 
