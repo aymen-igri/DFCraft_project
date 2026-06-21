@@ -1,6 +1,7 @@
 import { useTimer } from "../../shared/hooks/useTimer";
 import { CirclePlay, Square, Pause } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from '../../shared/i18n/translations';
 
 export default function Timer() {
   const {
@@ -25,6 +26,8 @@ export default function Timer() {
   const [lbMin, setLBMin] = useState(Math.floor(longBreakTime / 60));
   const [desable, setDesable] = useState(true);
   const [pause, setPause] = useState(false);
+
+  const { t } = useTranslation('home');
 
   useEffect(() => {
     if (!isRunning) {
@@ -129,8 +132,6 @@ export default function Timer() {
   return (
     <div className="flex flex-col items-center justify-center bg-light dark:bg-dark">
       <div className="relative">
-        {/* Background circle */}
-        {/* Background circle */}
         <div className="w-80 h-32 rounded-full flex justify-center items-center mt-[108px]">
           {isRunning ? (
             <p
@@ -140,27 +141,42 @@ export default function Timer() {
             </p>
           ) : time === originalTime ? (
             <div className="flex flex-col items-center">
-              <p className="text-lightElements dark:text-darkElements text-5xl font-semibold flex justify-center p-1">
-                <input
-                  type="text"
-                  value={String(min).padStart(2, '0')}
-                  onChange={(e) => setMin(parseInt(e.target.value) || 0)}
-                  className="w-[52px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-light dark:bg-dark"
-                />
-                :
-                <input
-                  type="text"
-                  value={String(bMin).padStart(2, '0')}
-                  onChange={(e) => setBMin(parseInt(e.target.value) || 0)}
-                  className="w-[52px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-light dark:bg-dark"
-                />
-                :
-                <input
-                  type="text"
-                  value={String(lbMin).padStart(2, '0')}
-                  onChange={(e) => setLBMin(parseInt(e.target.value) || 0)}
-                  className="w-[52px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-light dark:bg-dark"
-                />
+              <p className="text-lightElements dark:text-darkElements text-5xl font-semibold flex justify-center p-1 gap-1">
+                <span className="relative group">
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 text-sm px-2 py-0.5 rounded-md opacity-0 translate-y-1 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 bg-light dark:bg-dark text-darkPoints dark:text-lightPoints border border-dark dark:border-light whitespace-nowrap">
+                    {t('work')}
+                  </span>
+                  <input
+                    type="text"
+                    value={String(min).padStart(2, '0')}
+                    onChange={(e) => setMin(parseInt(e.target.value) || 0)}
+                    className="w-[52px] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-light dark:bg-dark outline-none"
+                  />
+                </span>
+                <span className="mt-1">:</span>
+                <span className="relative group">
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 text-sm px-2 py-0.5 rounded-md opacity-0 translate-y-1 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 bg-light dark:bg-dark text-darkPoints dark:text-lightPoints border border-dark dark:border-light whitespace-nowrap">
+                    {t('break')}
+                  </span>
+                  <input
+                    type="text"
+                    value={String(bMin).padStart(2, '0')}
+                    onChange={(e) => setBMin(parseInt(e.target.value) || 0)}
+                    className="w-[52px] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-light dark:bg-dark outline-none"
+                  />
+                </span>
+                <span className="mt-1">:</span>
+                <span className="relative group">
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 text-sm px-2 py-0.5 rounded-md opacity-0 translate-y-1 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-200 bg-light dark:bg-dark text-darkPoints dark:text-lightPoints border border-dark dark:border-light whitespace-nowrap">
+                    {t('longBreak')}
+                  </span>
+                  <input
+                    type="text"
+                    value={String(lbMin).padStart(2, '0')}
+                    onChange={(e) => setLBMin(parseInt(e.target.value) || 0)}
+                    className="w-[52px] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none bg-light dark:bg-dark outline-none"
+                  />
+                </span>
               </p>
             </div>
           ) : (
