@@ -6,20 +6,21 @@ import DistractionBlockingPage from "../../../pages/DistractionBlockingPage/Dist
 import { browserAPI } from "../../../shared/utils/browserAPI.js";
 
 export default function Body({ choosenPage }) {
-
   const renderPage = () => {
-    console.log("cest la page chosie" , choosenPage)
+    console.log("cest la page chosie", choosenPage);
     switch (choosenPage) {
       case "home":
         return <HomePage />;
       case "todo":
         return <TodoPage />;
       case "tracking":
-        browserAPI.tabs.create({ url: browserAPI.runtime.getURL("staticPages/statist.html") });
+        browserAPI.tabs.create({
+          url: browserAPI.runtime.getURL("staticPages/statist.html"),
+        });
         window.close();
         break;
       case "sounds":
-        return <SoundPlayerPage/>;
+        return <SoundPlayerPage />;
       case "distractionBlocking":
         return <DistractionBlockingPage />;
       case "settings":

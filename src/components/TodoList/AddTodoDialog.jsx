@@ -2,7 +2,12 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "../../shared/i18n/translations";
 
-export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities }) {
+export default function AddTodoDialog({
+  onAdd,
+  onClose,
+  taskTypes,
+  priorities,
+}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("personal");
@@ -16,7 +21,7 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
         title: title.trim(),
         description: description.trim(),
         type,
-        priority
+        priority,
       });
       setTitle("");
       setDescription("");
@@ -77,7 +82,7 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
               onChange={(e) => setType(e.target.value)}
               className="w-full p-3 rounded-lg bg-lightList dark:bg-darkList text-light dark:text-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {taskTypes.map(taskType => (
+              {taskTypes.map((taskType) => (
                 <option key={taskType.id} value={taskType.id}>
                   {taskType.label}
                 </option>
@@ -90,15 +95,15 @@ export default function AddTodoDialog({ onAdd, onClose, taskTypes, priorities })
               {t("priority")}
             </label>
             <div className="grid grid-cols-3 gap-2">
-              {priorities.map(p => (
+              {priorities.map((p) => (
                 <button
                   key={p.id}
                   type="button"
                   onClick={() => setPriority(p.id)}
                   className={`p-3 rounded-lg font-medium transition-all ${
                     priority === p.id
-                      ? 'bg-gradient-to-r from-lightList to-lightElements dark:from-purple-600 dark:to-purple-400 hover:from-purple-500 hover:to-purple-700 text-light dark:text-dark shadow-lg'
-                      : 'bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements hover:bg-opacity-80'
+                      ? "bg-gradient-to-r from-lightList to-lightElements dark:from-purple-600 dark:to-purple-400 hover:from-purple-500 hover:to-purple-700 text-light dark:text-dark shadow-lg"
+                      : "bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements hover:bg-opacity-80"
                   }`}
                 >
                   {p.label}

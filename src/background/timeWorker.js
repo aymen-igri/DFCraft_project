@@ -14,7 +14,7 @@ export let timerData = {
 
 // Charger l’état sauvegardé
 export async function loadTimer() {
-  const result = await browserAPI.storage.local.get(['timerData']);
+  const result = await browserAPI.storage.local.get(["timerData"]);
   if (result.timerData) {
     timerData = result.timerData;
     updateTimerFromLastSave();
@@ -29,7 +29,9 @@ export function updateTimerFromLastSave() {
     const oldTime = timerData.time;
     timerData.time = Math.max(0, timerData.time - secondsPassed);
     timerData.lastUpdate = now;
-    console.log(`⏩ Elapsed: ${secondsPassed}s (${oldTime} → ${timerData.time})`);
+    console.log(
+      `⏩ Elapsed: ${secondsPassed}s (${oldTime} → ${timerData.time})`,
+    );
     saveTimerData();
   }
 }
@@ -42,13 +44,13 @@ export function saveTimerData() {
 // Listener spécifique au timer
 export function setupTimerListener() {
   browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type === 'GET_TIMER') {
+    if (request.type === "GET_TIMER") {
       updateTimerFromLastSave();
       sendResponse(timerData);
-    } else if (request.type === 'UPDATE_TIMER') {
+    } else if (request.type === "UPDATE_TIMER") {
       const oldData = { ...timerData };
       Object.assign(timerData, request.data, { lastUpdate: Date.now() });
-      console.log('🔄 UPDATE:', { before: oldData, after: timerData });
+      console.log("🔄 UPDATE:", { before: oldData, after: timerData });
       saveTimerData();
       sendResponse({ success: true });
     }

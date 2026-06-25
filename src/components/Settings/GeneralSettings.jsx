@@ -1,24 +1,24 @@
-import { Bell, Globe } from 'lucide-react';
-import { useSettings } from '../../shared/context/SettingsContext';
-import { useTranslation } from '../../shared/i18n/translations';
-import SettingItem from './SettingItem';
-import ToggleSwitch from './ToggleSwitch';
-import SelectInput from './SelectInput';
+import { Bell, Globe } from "lucide-react";
+import { useSettings } from "../../shared/context/SettingsContext";
+import { useTranslation } from "../../shared/i18n/translations";
+import SettingItem from "./SettingItem";
+import ToggleSwitch from "./ToggleSwitch";
+import SelectInput from "./SelectInput";
 
 export default function GeneralSettings() {
   const { settings, updateSetting } = useSettings();
   const { t } = useTranslation("settings");
 
   const languageOptions = [
-    { value: 'fr', label: t('french')},
-    { value: 'en', label: t('english')},
-    { value: 'ar', label: t('arabic')},
+    { value: "fr", label: t("french") },
+    { value: "en", label: t("english") },
+    { value: "ar", label: t("arabic") },
   ];
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-light dark:text-dark mb-6">
-        {t('generalSettings')}
+        {t("generalSettings")}
       </h2>
 
       {/* Notifications */}
@@ -35,18 +35,18 @@ export default function GeneralSettings() {
       </SettingItem> */}
 
       {/* Language (GLOBAL) */}
-      <div className='flex flex-col justify-center'>
+      <div className="flex flex-col justify-center">
         <SettingItem
-        icon={Globe}
-        title={t('language')}
-        // description={t('languageDesc')}
-      >
-        <SelectInput
-          value={settings.language}
-          onChange={(value) => updateSetting('language', value)}
-          options={languageOptions}
-        />
-      </SettingItem>
+          icon={Globe}
+          title={t("language")}
+          // description={t('languageDesc')}
+        >
+          <SelectInput
+            value={settings.language}
+            onChange={(value) => updateSetting("language", value)}
+            options={languageOptions}
+          />
+        </SettingItem>
       </div>
     </div>
   );

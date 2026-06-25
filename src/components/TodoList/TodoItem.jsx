@@ -161,7 +161,8 @@ export default function TodoItem({
 
           {todo.description && (
             <p className="text-sm text-lightPlaceHolder dark:text-darkPlaceHolder mb-2">
-              {todo.description.slice(0, 45) + (todo.description.length > 45 ? "..." : "")}
+              {todo.description.slice(0, 45) +
+                (todo.description.length > 45 ? "..." : "")}
             </p>
           )}
 

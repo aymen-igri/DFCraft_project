@@ -1,21 +1,21 @@
-import { useState } from 'react';
-import { useSettings } from '../../shared/context/SettingsContext';
-import { useTranslation } from '../../shared/i18n/translations';
-import GeneralSettings from '../../components/Settings/GeneralSettings';
-import AppearanceSettings from '../../components/Settings/AppearanceSettings';
-import AdvancedSettings from '../../components/Settings/AdvancedSettings';
-import { Settings, Palette, Sliders } from 'lucide-react';
+import { useState } from "react";
+import { useSettings } from "../../shared/context/SettingsContext";
+import { useTranslation } from "../../shared/i18n/translations";
+import GeneralSettings from "../../components/Settings/GeneralSettings";
+import AppearanceSettings from "../../components/Settings/AppearanceSettings";
+import AdvancedSettings from "../../components/Settings/AdvancedSettings";
+import { Settings, Palette, Sliders } from "lucide-react";
 
 export default function SettingsPage() {
   const { resetSettings } = useSettings();
-  const { t } = useTranslation('settings');
-  const [activeTab, setActiveTab] = useState('general');
+  const { t } = useTranslation("settings");
+  const [activeTab, setActiveTab] = useState("general");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const tabs = [
-    { id: 'general', label: t('generalSettings'), icon: Settings },
-    { id: 'appearance', label: t('appearanceSettings'), icon: Palette },
-    { id: 'advanced', label: t('advancedSettings'), icon: Sliders },
+    { id: "general", label: t("generalSettings"), icon: Settings },
+    { id: "appearance", label: t("appearanceSettings"), icon: Palette },
+    { id: "advanced", label: t("advancedSettings"), icon: Sliders },
   ];
 
   const handleReset = () => {
@@ -29,10 +29,10 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-lightElements dark:text-darkElements mb-2">
-            {t('settingsTitle')}
+            {t("settingsTitle")}
           </h1>
           <p className="text-lightPlaceHolder dark:text-darkPlaceHolder">
-            {t('personaliser')}
+            {t("personaliser")}
           </p>
         </div>
 
@@ -48,8 +48,8 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-light dark:text-dark ${
                       activeTab === tab.id
-                        ? 'bg-lightList dark:bg-darkList shadow-lg'
-                        : 'hover:bg-lightList dark:hover:bg-darkList'
+                        ? "bg-lightList dark:bg-darkList shadow-lg"
+                        : "hover:bg-lightList dark:hover:bg-darkList"
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -64,16 +64,16 @@ export default function SettingsPage() {
               onClick={() => setShowResetConfirm(true)}
               className="w-full mt-4 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-lg"
             >
-              {t('reset')}
+              {t("reset")}
             </button>
           </div>
 
           {/* Content Area */}
           <div className="flex-1">
             <div className="bg-lightElements dark:bg-darkElements rounded-2xl p-6 shadow-lg">
-              {activeTab === 'general' && <GeneralSettings />}
-              {activeTab === 'appearance' && <AppearanceSettings />}
-              {activeTab === 'advanced' && <AdvancedSettings />}
+              {activeTab === "general" && <GeneralSettings />}
+              {activeTab === "appearance" && <AppearanceSettings />}
+              {activeTab === "advanced" && <AdvancedSettings />}
             </div>
           </div>
         </div>
@@ -83,23 +83,23 @@ export default function SettingsPage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-light dark:bg-dark rounded-2xl shadow-2xl max-w-md w-full p-6">
               <h2 className="text-2xl font-bold text-lightElements dark:text-darkElements mb-4">
-                {t('confirmReset')}
+                {t("confirmReset")}
               </h2>
               <p className="text-lightPlaceHolder dark:text-darkPlaceHolder mb-6">
-                {t('resetWarning')}
+                {t("resetWarning")}
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowResetConfirm(false)}
                   className="flex-1 px-4 py-3 bg-lightList dark:bg-darkList text-lightElements dark:text-darkElements rounded-xl font-medium hover:bg-opacity-80 transition-colors"
                 >
-                  {t('cancel')}
+                  {t("cancel")}
                 </button>
                 <button
                   onClick={handleReset}
                   className="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors shadow-lg"
                 >
-                  {t('confirm')}
+                  {t("confirm")}
                 </button>
               </div>
             </div>

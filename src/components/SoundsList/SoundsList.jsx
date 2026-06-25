@@ -9,7 +9,6 @@ import { useSettings } from "../../shared/context/SettingsContext";
 import useLazyLoad from "../../shared/hooks/useLazyLoad.jsx";
 
 export default function SoundsList({ category, searchSound }) {
-
   const [soundsByCat, setSoundsByCat] = useState(null);
   const [listenPage, setListenPage] = useState(false);
   const [listenSound, setListenSound] = useState(null);
@@ -28,7 +27,10 @@ export default function SoundsList({ category, searchSound }) {
       s.author.toLowerCase().includes(searchSound.toLowerCase()),
   );
 
-  const { visibleItems, hasMore, sentinelRef } = useLazyLoad(filteredSounds, 10);
+  const { visibleItems, hasMore, sentinelRef } = useLazyLoad(
+    filteredSounds,
+    10,
+  );
 
   const handleListenSound = (s) => {
     setListenPage(true);

@@ -5,7 +5,7 @@ export default function EasyTasks() {
   const [tasks, setTasks] = useState([]);
   const [showListTasks, setShowListTasks] = useState(false);
   const [completedTasks, setCompletedTasks] = useState(0);
-  const { t } = useTranslation("home")
+  const { t } = useTranslation("home");
 
   useEffect(() => {
     const Tasks = JSON.parse(localStorage.getItem("dfcraft_todos") || "[]");

@@ -71,21 +71,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       currentSound: ambientAudio?.src || null,
     });
   }
-  
-  if (message.type === "SEEK_TO_POSITION_OFFSCREEN"){
+
+  if (message.type === "SEEK_TO_POSITION_OFFSCREEN") {
     if (ambientAudio) {
-          try {
-            ambientAudio.currentTime = message.time;
-            console.log("⏩ Seeked to:", message.time);
-            sendResponse({ success: true });
-          } catch (e) {
-            console.error("Seek failed:", e);
-            sendResponse({ success: false, error: String(e) });
-          }
-        } else {
-          sendResponse({ success: false, error: "No audio playing" });
-        }
-        return true;
+      try {
+        ambientAudio.currentTime = message.time;
+        console.log("⏩ Seeked to:", message.time);
+        sendResponse({ success: true });
+      } catch (e) {
+        console.error("Seek failed:", e);
+        sendResponse({ success: false, error: String(e) });
+      }
+    } else {
+      sendResponse({ success: false, error: "No audio playing" });
+    }
+    return true;
   }
 
   return true;
@@ -267,13 +267,13 @@ function startTimeUpdates() {
   if (timeUpdateInterval) {
     clearInterval(timeUpdateInterval);
   }
-  
+
   // Send time updates every 500ms
   timeUpdateInterval = setInterval(() => {
     if (ambientAudio && !ambientAudio.paused) {
       broadcastToBackground("timeupdate", {
         currentTime: ambientAudio.currentTime,
-        duration: ambientAudio.duration || 0
+        duration: ambientAudio.duration || 0,
       });
     }
   }, 500);

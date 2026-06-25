@@ -1,18 +1,16 @@
 import { Filter } from "lucide-react";
 import { useTranslation } from "../../shared/i18n/translations";
 
-export default function 
-FilterBar({ 
-  filterType, 
-  setFilterType, 
-  filterPriority, 
+export default function FilterBar({
+  filterType,
+  setFilterType,
+  filterPriority,
   setFilterPriority,
   filterStatus,
   setFilterStatus,
   taskTypes,
-  priorities 
+  priorities,
 }) {
-
   const { t } = useTranslation("ToDoTasks");
 
   return (
@@ -36,8 +34,10 @@ FilterBar({
             className="w-full p-2 rounded-lg bg-lightList dark:bg-darkList text-light dark:text-dark text-sm focus:outline-none focus:ring-2"
           >
             <option value="all">{t("allType")}</option>
-            {taskTypes.map(type => (
-              <option key={type.id} value={type.id}>{type.label}</option>
+            {taskTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.label}
+              </option>
             ))}
           </select>
         </div>
@@ -53,8 +53,10 @@ FilterBar({
             className="w-full p-2 rounded-lg bg-lightList dark:bg-darkList text-light dark:text-dark text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">{t("allPriority")}</option>
-            {priorities.map(priority => (
-              <option key={priority.id} value={priority.id}>{priority.label}</option>
+            {priorities.map((priority) => (
+              <option key={priority.id} value={priority.id}>
+                {priority.label}
+              </option>
             ))}
           </select>
         </div>

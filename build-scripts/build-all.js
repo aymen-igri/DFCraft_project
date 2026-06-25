@@ -90,7 +90,14 @@ try {
   );
 
   fs.copySync(
-    path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
+    path.join(
+      __dirname,
+      "..",
+      "public",
+      "staticPages",
+      "Statist",
+      "statist.html",
+    ),
     path.join(chromeDir, "staticPages", "statist.html"),
   );
 
@@ -105,7 +112,14 @@ try {
   );
 
   fs.copySync(
-    path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+    path.join(
+      __dirname,
+      "..",
+      "public",
+      "staticPages",
+      "Statist",
+      "translation.js",
+    ),
     path.join(chromeDir, "staticPages", "translation.js"),
   );
 
@@ -120,7 +134,14 @@ try {
   );
 
   fs.copySync(
-    path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
+    path.join(
+      __dirname,
+      "..",
+      "public",
+      "staticPages",
+      "Statist",
+      "statist.html",
+    ),
     path.join(firefoxDir, "staticPages", "statist.html"),
   );
 
@@ -135,7 +156,14 @@ try {
   );
 
   fs.copySync(
-    path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
+    path.join(
+      __dirname,
+      "..",
+      "public",
+      "staticPages",
+      "Statist",
+      "translation.js",
+    ),
     path.join(firefoxDir, "staticPages", "translation.js"),
   );
 

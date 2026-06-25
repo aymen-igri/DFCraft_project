@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  CirclePlay,
-  LoaderCircle,
-  CirclePause,
-} from "lucide-react";
+import { CirclePlay, LoaderCircle, CirclePause } from "lucide-react";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import config from "../../shared/constants/config";
 import axios from "axios";
@@ -38,26 +34,29 @@ export default function EasySoundPlayer() {
   useEffect(() => {
     // Wait until we have the sounds list from the API
     if (sounds.length === 0) return;
-  
+
     if (currentSound) {
       console.log("🔄 Restoring sound display for:", currentSound);
-  
+
       const normalizeUrl = (url) => {
         if (!url) return "";
         return url.split("/").pop() || url;
       };
-  
+
       const currentFile = normalizeUrl(currentSound);
       const playingSound = sounds.find((s) => {
         const soundFile = normalizeUrl(s.file);
         return soundFile === currentFile;
       });
-  
+
       if (playingSound) {
         setSound(playingSound);
         console.log("✅ Found playing sound:", playingSound.title);
       } else {
-        console.warn("⚠️ No matching sound found for currentSound:", currentSound);
+        console.warn(
+          "⚠️ No matching sound found for currentSound:",
+          currentSound,
+        );
       }
     }
   }, [currentSound, sounds]);
@@ -94,7 +93,10 @@ export default function EasySoundPlayer() {
     <div className="bg-lightElements dark:bg-darkElements px-6 py-3 my-5 mx-14 rounded-3xl transition-all duration-300 ease-in-out overflow-hidden">
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row justify-center items-center">
-          <img src={sound?.coverImage} className={`w-10 h-10 rounded-lg ${settings.language === "ar" ? "ml-2" : "mr-2"}`} />
+          <img
+            src={sound?.coverImage}
+            className={`w-10 h-10 rounded-lg ${settings.language === "ar" ? "ml-2" : "mr-2"}`}
+          />
           <div className="mb-1">
             <div className="text-light dark:text-dark text-lg">
               {sound.title.length > 14

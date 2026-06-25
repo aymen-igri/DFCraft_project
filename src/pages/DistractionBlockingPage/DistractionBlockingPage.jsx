@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import InputAddUrl from "../../components/Input/InputAddUrl";
 import UrlList from "../../components/List/UrlList";
-import {Trash, ListFilter, Plus } from "lucide-react";
+import { Trash, ListFilter, Plus } from "lucide-react";
 import useSaveUrl from "../../shared/hooks/useSaveUrl";
 import DisplayBlockTypes from "../../components/DisplayBlockTypes/DisplayBlockTypes";
 import { useTranslation } from "../../shared/i18n/translations";
@@ -65,7 +65,7 @@ const DistractionBlockingPage = () => {
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => setSearchedValue(e.target.value)}
           placeholder={t("SplaceHolder")}
-          className={`p-2 ${settings.language === "ar" ? "mr-6 ml-2 " : "ml-6 mr-2"} rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? 'text-light dark:text-dark' : 'placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder'} w-full focus:outline-none`}
+          className={`p-2 ${settings.language === "ar" ? "mr-6 ml-2 " : "ml-6 mr-2"} rounded-lg bg-lightList dark:bg-darkList ${searchedValue ? "text-light dark:text-dark" : "placeholder:text-lightPlaceHolder dark:placeholder:text-darkPlaceHolder"} w-full focus:outline-none`}
         />
         {isDelete ? (
           <button

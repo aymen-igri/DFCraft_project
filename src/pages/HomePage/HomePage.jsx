@@ -4,11 +4,13 @@ import EasySoundPlayer from "../../components/EasySoundPlayer/EasySoundPlayer.js
 import Phases from "../../components/Phases/Phases.jsx";
 
 export default function HomePage() {
-    return (<>
+  return (
+    <>
       <Timer />
       <Phases />
       <EasyTasks />
       <EasySoundPlayer />
       <div className="h-4 w-full"></div>
-    </>)
+    </>
+  );
 }

@@ -1,14 +1,17 @@
 import List from "./List";
-import {useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "../../shared/i18n/translations";
 
 const UrlList = ({ urlElements, setUrlElements, setSelectedElement }) => {
-
   const { t } = useTranslation("blockPages");
 
   if (urlElements.length === 0)
-    return <div className="text-start text-lightElements dark:text-darkElements p-4">{t("existance")}</div>;
+    return (
+      <div className="text-start text-lightElements dark:text-darkElements p-4">
+        {t("existance")}
+      </div>
+    );
   console.log("urlElements", urlElements);
   return (
     <div>
@@ -119,7 +122,9 @@ function MultiSelect({ urlElement, setUrlElement }) {
   function handleChangeSownd(url) {
     setUrlElement((prv) =>
       prv.map((item) =>
-        item.url === url ? { ...item, sowndBlocked: true, urlBlocked: false } : item,
+        item.url === url
+          ? { ...item, sowndBlocked: true, urlBlocked: false }
+          : item,
       ),
     );
     setClicked(false);
@@ -127,7 +132,9 @@ function MultiSelect({ urlElement, setUrlElement }) {
   function handleChangeBlocked(url) {
     setUrlElement((prv) =>
       prv.map((item) =>
-        item.url === url ? { ...item, urlBlocked: true, sowndBlocked: false } : item,
+        item.url === url
+          ? { ...item, urlBlocked: true, sowndBlocked: false }
+          : item,
       ),
     );
     setClicked(false);

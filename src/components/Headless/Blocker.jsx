@@ -1,12 +1,8 @@
-import useBlockUrl from '../../shared/hooks/useBlockUrl';
+import useBlockUrl from "../../shared/hooks/useBlockUrl";
 
-const Blocker = ({BlockedItem , isRunning}) => {
-    useBlockUrl(BlockedItem , isRunning);
-    return (
-        <></>
-    );
+const Blocker = ({ BlockedItem, isRunning }) => {
+  useBlockUrl(BlockedItem, isRunning);
+  return <></>;
 };
-
-
 
 export default Blocker;

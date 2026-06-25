@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check } from "lucide-react";
 
 export default function ColorPicker({ value, onChange, options }) {
   return (
@@ -8,7 +8,9 @@ export default function ColorPicker({ value, onChange, options }) {
           key={option.value}
           onClick={() => onChange(option.value)}
           className={`w-10 h-10 rounded-full transition-all hover:scale-110 ${
-            value === option.value ? 'ring-2 ring-offset-2 ring-lightElements dark:ring-darkElements' : ''
+            value === option.value
+              ? "ring-2 ring-offset-2 ring-lightElements dark:ring-darkElements"
+              : ""
           }`}
           style={{ backgroundColor: option.color }}
           title={option.label}

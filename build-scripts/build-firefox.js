@@ -88,28 +88,42 @@ try {
   );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "staticPages", "Statist", "statist.html"),
-      path.join(firefoxDir, "staticPages", "statist.html"),
+    path.join(
+      __dirname,
+      "..",
+      "public",
+      "staticPages",
+      "Statist",
+      "statist.html",
+    ),
+    path.join(firefoxDir, "staticPages", "statist.html"),
   );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "staticPages", "Statist", "Script.js"),
-      path.join(firefoxDir, "staticPages", "Script.js"),
+    path.join(__dirname, "..", "public", "staticPages", "Statist", "Script.js"),
+    path.join(firefoxDir, "staticPages", "Script.js"),
   );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
-      path.join(firefoxDir, "staticPages", "Style.css"),
+    path.join(__dirname, "..", "public", "staticPages", "Statist", "Style.css"),
+    path.join(firefoxDir, "staticPages", "Style.css"),
   );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "staticPages", "Statist", "translation.js"),
-      path.join(firefoxDir, "staticPages", "translation.js"),
-    );
+    path.join(
+      __dirname,
+      "..",
+      "public",
+      "staticPages",
+      "Statist",
+      "translation.js",
+    ),
+    path.join(firefoxDir, "staticPages", "translation.js"),
+  );
 
   fs.copySync(
-      path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
-      path.join(firefoxDir, "vendor", "echarts.min.js"),
+    path.join(__dirname, "..", "public", "vendor", "echarts.min.js"),
+    path.join(firefoxDir, "vendor", "echarts.min.js"),
   );
 
   // Copy icons and sounds

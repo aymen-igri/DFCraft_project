@@ -19,7 +19,7 @@ export default function useLazyLoad(items, batchSize = 10) {
           setVisibleCount((prev) => Math.min(prev + batchSize, items.length));
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(sentinelRef.current);

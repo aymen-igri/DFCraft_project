@@ -1,4 +1,13 @@
-import { Menu, X, Home, AudioLines, BarChart3, Shield, Settings, ListChecks } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  AudioLines,
+  BarChart3,
+  Shield,
+  Settings,
+  ListChecks,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSettings } from "../../../shared/context/SettingsContext";
 import { useTranslation } from "../../../shared/i18n/translations";
@@ -7,12 +16,16 @@ export default function Header({ setChoosenPage }) {
   const [showMenu, setShowMenu] = useState(false);
   const [urlLogo, setUrlLogo] = useState("");
   const [activeRoute, setActiveRoute] = useState("home");
-  const { t } = useTranslation('common');
+  const { t } = useTranslation("common");
   const { settings } = useSettings();
 
   useEffect(() => {
     try {
-      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+      if (
+        typeof chrome !== "undefined" &&
+        chrome.runtime &&
+        chrome.runtime.getURL
+      ) {
         setUrlLogo(chrome.runtime.getURL("icons/LOGO.png"));
       } else {
         setUrlLogo("icons/LOGO.png");
@@ -31,7 +44,7 @@ export default function Header({ setChoosenPage }) {
     { id: "tracking", labelKey: "progress", icon: BarChart3 },
     { id: "settings", labelKey: "settings", icon: Settings },
   ];
-  
+
   const handleNavigation = (pageId) => {
     setActiveRoute(pageId);
     setChoosenPage(pageId);
@@ -43,7 +56,10 @@ export default function Header({ setChoosenPage }) {
       <header className="sticky top-0 z-50 bg-light dark:bg-dark">
         <div className="px-3 py-1">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavigation("home")}>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => handleNavigation("home")}
+            >
               <img src={urlLogo} alt="Logo" className="w-[40%] h-auto" />
             </div>
 
@@ -63,17 +79,19 @@ export default function Header({ setChoosenPage }) {
 
         {showMenu && (
           <>
-            <div 
+            <div
               className="fixed inset-0 bg-light/20 dark:bg-dark/20 backdrop-blur-sm"
               onClick={() => setShowMenu(false)}
             />
-            
-            <div className={`absolute ${settings.language === 'ar' ? 'left-4' : 'right-4'} top-16 w-48 bg-lightElements dark:bg-darkElements rounded-2xl shadow-2xl overflow-hidden animate-slideIn`}>
+
+            <div
+              className={`absolute ${settings.language === "ar" ? "left-4" : "right-4"} top-16 w-48 bg-lightElements dark:bg-darkElements rounded-2xl shadow-2xl overflow-hidden animate-slideIn`}
+            >
               <div className="p-2">
                 {menuItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeRoute === item.id;
-                  
+
                   return (
                     <button
                       key={item.id}

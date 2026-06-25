@@ -1,9 +1,9 @@
-import { Volume2, Music } from 'lucide-react';
-import { useSettings } from '../../shared/context/SettingsContext';
-import { useTranslation } from '../../shared/i18n/translations';
-import SettingItem from './SettingItem';
-import ToggleSwitch from './ToggleSwitch';
-import VolumeSlider from './VolumeSlider';
+import { Volume2, Music } from "lucide-react";
+import { useSettings } from "../../shared/context/SettingsContext";
+import { useTranslation } from "../../shared/i18n/translations";
+import SettingItem from "./SettingItem";
+import ToggleSwitch from "./ToggleSwitch";
+import VolumeSlider from "./VolumeSlider";
 
 export default function AudioSettings() {
   const { settings, updateSetting } = useSettings();
@@ -12,30 +12,30 @@ export default function AudioSettings() {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-lightElements dark:text-darkElements mb-6">
-        {t('audioSettings')}
+        {t("audioSettings")}
       </h2>
 
       {/* Volume Control */}
       <SettingItem
         icon={Volume2}
-        title={t('volume')}
-        description={t('volumeDesc')}
+        title={t("volume")}
+        description={t("volumeDesc")}
       >
         <VolumeSlider
           value={settings.volume}
-          onChange={(value) => updateSetting('volume', value)}
+          onChange={(value) => updateSetting("volume", value)}
         />
       </SettingItem>
 
       {/* Sounds Toggle */}
       <SettingItem
         icon={Music}
-        title={t('sounds')}
-        description={t('soundsDesc')}
+        title={t("sounds")}
+        description={t("soundsDesc")}
       >
         <ToggleSwitch
           checked={settings.sounds}
-          onChange={(checked) => updateSetting('sounds', checked)}
+          onChange={(checked) => updateSetting("sounds", checked)}
         />
       </SettingItem>
 

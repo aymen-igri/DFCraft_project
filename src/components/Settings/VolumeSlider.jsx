@@ -1,4 +1,4 @@
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX } from "lucide-react";
 
 export default function VolumeSlider({ value, onChange }) {
   return (
@@ -17,8 +17,8 @@ export default function VolumeSlider({ value, onChange }) {
             var(--tw-gradient-from) ${value}%, 
             var(--tw-gradient-to) ${value}%, 
             var(--tw-gradient-to) 100%)`,
-          '--tw-gradient-from': 'rgb(124, 58, 237)',
-          '--tw-gradient-to': 'rgb(229, 231, 235)',
+          "--tw-gradient-from": "rgb(124, 58, 237)",
+          "--tw-gradient-to": "rgb(229, 231, 235)",
         }}
       />
       <Volume2 className="w-4 h-4 text-lightElements dark:text-darkElements" />

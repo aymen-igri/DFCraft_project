@@ -1,15 +1,14 @@
 /* Light mode (default) */
 :root {
-  --selected-bar-color: #B46CFA;
-  --bar-color: #5B1FC0;
-  --bar-track-color: #6D00D8;
+  --selected-bar-color: #b46cfa;
+  --bar-color: #5b1fc0;
+  --bar-track-color: #6d00d8;
 }
 
-
 .dark {
-  --selected-bar-color: #5A00B0;
-  --bar-color: #C8A0EF;
-  --bar-track-color: #B46CFA;
+  --selected-bar-color: #5a00b0;
+  --bar-color: #c8a0ef;
+  --bar-track-color: #b46cfa;
 }
 
 /* Remove default browser styling */
@@ -54,15 +53,15 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 
-@keyframes BtoT{
-    0%{
-        transform: translateY(200px);
-    }
-    100%{
-        transform: translateY(0px);
-    }
+@keyframes BtoT {
+  0% {
+    transform: translateY(200px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 
-.BtoT{
-    animation: BtoT 0.3s ease-in-out forwards;
+.BtoT {
+  animation: BtoT 0.3s ease-in-out forwards;
 }

@@ -16,7 +16,11 @@ export default function ListByCategory() {
 
   useEffect(() => {
     try {
-      if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+      if (
+        typeof chrome !== "undefined" &&
+        chrome.runtime &&
+        chrome.runtime.getURL
+      ) {
         setUrlImg(chrome.runtime.getURL("icons/lostConnection.png"));
       } else {
         setUrlImg("icons/lostConnection.png");
@@ -30,11 +34,10 @@ export default function ListByCategory() {
   if (navigator.onLine === false) {
     return (
       <div className="flex flex-col items-center justify-center p-4">
-        <img
-          src={urlImg}
-          alt="No Internet Connection"
-        />
-        <div className="p-2 text-center text-lightElements dark:text-darkElements">{t("noConnection")}</div>
+        <img src={urlImg} alt="No Internet Connection" />
+        <div className="p-2 text-center text-lightElements dark:text-darkElements">
+          {t("noConnection")}
+        </div>
       </div>
     );
   }

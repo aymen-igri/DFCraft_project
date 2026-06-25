@@ -11,7 +11,7 @@ export function TimerProvider({ children }) {
   const [phaseType, setPhaseType] = useState("work");
   const [isRunning, setIsRunning] = useState(false);
   const [reset, setReset] = useState(false);
-  const [sessionCount, setSessionCount] = useState(0)
+  const [sessionCount, setSessionCount] = useState(0);
 
   const isInitialized = useRef(false); // ✅ Prevent initial sync
   const isMounted = useRef(true);
@@ -86,7 +86,7 @@ export function TimerProvider({ children }) {
           breakTime,
           longBreakTime,
           phaseType,
-          sessionCount
+          sessionCount,
         });
         await browserAPI.runtime.sendMessage({
           type: "UPDATE_TIMER",
@@ -98,7 +98,7 @@ export function TimerProvider({ children }) {
             longBreakTime,
             phaseType,
             isRunning,
-            sessionCount
+            sessionCount,
           },
         });
         console.log("✅ Sync complete");
@@ -108,7 +108,16 @@ export function TimerProvider({ children }) {
     };
 
     syncTimer();
-  }, [time, originalTime, workTime, breakTime, longBreakTime, phaseType, isRunning, sessionCount]);
+  }, [
+    time,
+    originalTime,
+    workTime,
+    breakTime,
+    longBreakTime,
+    phaseType,
+    isRunning,
+    sessionCount,
+  ]);
 
   // Handle reset
   useEffect(() => {
