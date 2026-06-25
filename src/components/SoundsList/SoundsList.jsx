@@ -42,18 +42,17 @@ export default function SoundsList({ category, searchSound }) {
   
   // Restore the currently playing sound when extension reopens
   useEffect(() => {
-    if (currentSound && soundsByCat?.sounds && !listenSound) {
+    if (!soundsByCat?.sounds) return;
+    
+    if (currentSound && !listenSound) {
       console.log("🔄 Restoring sound display for:", currentSound);
       
-      // Normalize URL for comparison
       const normalizeUrl = (url) => {
         if (!url) return "";
         return url.split("/").pop() || url;
       };
       
       const currentFile = normalizeUrl(currentSound);
-      
-      // Find the sound that matches the currently playing sound
       const playingSound = soundsByCat.sounds.find(s => {
         const soundFile = normalizeUrl(s.file);
         return soundFile === currentFile;

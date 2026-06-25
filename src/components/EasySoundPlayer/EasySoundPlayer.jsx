@@ -33,7 +33,7 @@ export default function EasySoundPlayer() {
     };
 
     fetchSounds();
-  }, [soundsURL, sounds]);
+  }, [soundsURL]);
 
   useEffect(() => {
     // Wait until we have the sounds list from the API

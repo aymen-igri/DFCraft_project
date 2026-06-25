@@ -36,7 +36,7 @@ export default function TodoPage() {
       <div className="bg-light dark:bg-dark min-h-screen flex flex-col items-center justify-center p-6">
         <div className="flex flex-col items-center gap-8">
           <img
-            src="/icons/todo.png"
+            src={browserAPI.runtime.getURL("icons/todo.png")}
             alt="Todo List"
             className="w-64 h-64 object-contain opacity-80 dark:opacity-70"
           />
