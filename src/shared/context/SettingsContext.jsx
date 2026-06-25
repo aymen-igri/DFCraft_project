@@ -193,18 +193,11 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-          chrome.storage.local.get(['settings'], (result) => {
-            if (result.settings) {
-              setSettings({ ...DEFAULT_SETTINGS, ...result.settings });
-            }
-            setIsLoading(false);
-          });
-        } else {
-          const saved = localStorage.getItem('dfcraft_settings');
-          if (saved) setSettings({ ...DEFAULT_SETTINGS, ...JSON.parse(saved) });
-          setIsLoading(false);
-        }
+        const result = await browserAPI.storage.local.get(['settings']);
+         if (result.settings) {
+           setSettings({ ...DEFAULT_SETTINGS, ...result.settings });
+         }
+         setIsLoading(false);
       } catch (err) {
         console.error('Error loading settings:', err);
         setIsLoading(false);
@@ -217,11 +210,7 @@ export function SettingsProvider({ children }) {
     try {
       const updated = { ...settings, ...newSettings };
       setSettings(updated);
-      if (typeof chrome !== 'undefined' && chrome.storage) {
-        chrome.storage.local.set({ settings: updated });
-      } else {
-        localStorage.setItem('dfcraft_settings', JSON.stringify(updated));
-      }
+      await browserAPI.storage.local.set({ settings: updated });
     } catch (err) {
       console.error('Error saving settings:', err);
     }
