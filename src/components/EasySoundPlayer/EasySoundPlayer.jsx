@@ -33,44 +33,34 @@ export default function EasySoundPlayer() {
     };
 
     fetchSounds();
-  }, [soundsURL]);
+  }, [soundsURL, sounds]);
 
   useEffect(() => {
-    if (currentSound && sounds.length > 0 && !sound) {
+    // Wait until we have the sounds list from the API
+    if (sounds.length === 0) return;
+  
+    if (currentSound) {
       console.log("🔄 Restoring sound display for:", currentSound);
-
-      // Normalize URL for comparison
+  
       const normalizeUrl = (url) => {
         if (!url) return "";
         return url.split("/").pop() || url;
       };
-
+  
       const currentFile = normalizeUrl(currentSound);
-
-      // Find the sound that matches the currently playing sound
       const playingSound = sounds.find((s) => {
         const soundFile = normalizeUrl(s.file);
         return soundFile === currentFile;
       });
-
+  
       if (playingSound) {
         setSound(playingSound);
-        console.log("✅ Found playing sound:", sound);
+        console.log("✅ Found playing sound:", playingSound.title);
       } else {
-        console.warn(
-          "⚠️ No matching sound found for currentSound:",
-          currentSound,
-        );
+        console.warn("⚠️ No matching sound found for currentSound:", currentSound);
       }
-    } else if (sound) {
-      console.log("Current sound already set, skipping restore:", sound);
-    } else {
-      console.warn("⚠️ Cannot restore sound display - missing dependencies:", {
-        currentSound,
-        sounds,
-      });
     }
-  }, [currentSound, sound, sounds]);
+  }, [currentSound, sounds]);
 
   const togglePlay = () => {
     console.log("🎵 TOGGLE PLAY");
