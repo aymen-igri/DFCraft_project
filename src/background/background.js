@@ -133,14 +133,6 @@ async function init() {
 
 init();
 
-// Load saved state
-browserAPI.storage.local.get(["timerData"]).then((result) => {
-  if (result.timerData) {
-    timerData = result.timerData;
-    updateTimerFromLastSave();
-  }
-});
-
 function updateTimerFromLastSave() {
   if (timerData.isRunning && timerData.time > 0) {
     const now = Date.now();
@@ -830,21 +822,6 @@ async function ensureOffscreenDocument() {
   } catch (e) {
     console.error("[BG] ensureOffscreenDocument error:", e);
   }
-}
-
-firefoxTimeInterval = setInterval(() => {
-  if (firefoxAudio && !firefoxAudio.paused) {
-    broadcastAudioStatus("timeupdate", {
-      currentTime: firefoxAudio.currentTime,
-      duration: firefoxAudio.duration || 0,
-    });
-  }
-}, 500);
-
-// When audio stops/pauses, clear it:
-if (firefoxTimeInterval) {
-  clearInterval(firefoxTimeInterval);
-  firefoxTimeInterval = null;
 }
 
 function broadcastAudioStatus(status, data = {}) {
