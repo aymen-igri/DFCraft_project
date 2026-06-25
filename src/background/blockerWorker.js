@@ -43,7 +43,7 @@ async function blockSound(result) {
   const tabs = await browserAPI.tabs.query({});
 
   for (const element of result) {
-    if (!element.sowndBlocked) continue;
+    if (!element.soundBlocked) continue;
     if (!element.url) continue; // protection ici
 
     for (const tab of tabs) {
