@@ -6,18 +6,30 @@ import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import { Skeleton } from "@mui/material";
 import { useTranslation } from "../../shared/i18n/translations";
 import { useSettings } from "../../shared/context/SettingsContext";
-
+import useLazyLoad from "../../shared/hooks/useLazyLoad.jsx";
 
 export default function SoundsList({ category, searchSound }) {
-  const catURL = config.SoundLibraryApi;
+
   const [soundsByCat, setSoundsByCat] = useState(null);
   const [listenPage, setListenPage] = useState(false);
   const [listenSound, setListenSound] = useState(null);
   const { settings } = useSettings();
   const { t } = useTranslation("sound");
-
   const { play, isPlaying, currentSound } = useBackgroundAudio();
-  
+  const catURL = config.SoundLibraryApi;
+
+  const sounds = soundsByCat?.sounds || [];
+  const filteredSoundsByCat =
+    category === "all" ? sounds : sounds.filter((s) => s.category === category);
+
+  const filteredSounds = filteredSoundsByCat.filter(
+    (s) =>
+      s.title.toLowerCase().includes(searchSound.toLowerCase()) ||
+      s.author.toLowerCase().includes(searchSound.toLowerCase()),
+  );
+
+  const { visibleItems, hasMore, sentinelRef } = useLazyLoad(filteredSounds, 10);
+
   const handleListenSound = (s) => {
     setListenPage(true);
     setListenSound(s);
@@ -38,26 +50,25 @@ export default function SoundsList({ category, searchSound }) {
 
     fetchSoundsByCat();
   }, [catURL]);
-  
-  
+
   // Restore the currently playing sound when extension reopens
   useEffect(() => {
     if (!soundsByCat?.sounds) return;
-    
+
     if (currentSound && !listenSound) {
       console.log("🔄 Restoring sound display for:", currentSound);
-      
+
       const normalizeUrl = (url) => {
         if (!url) return "";
         return url.split("/").pop() || url;
       };
-      
+
       const currentFile = normalizeUrl(currentSound);
-      const playingSound = soundsByCat.sounds.find(s => {
+      const playingSound = soundsByCat.sounds.find((s) => {
         const soundFile = normalizeUrl(s.file);
         return soundFile === currentFile;
       });
-      
+
       if (playingSound) {
         console.log("✅ Found playing sound:", playingSound.title);
         setListenSound(playingSound);
@@ -72,29 +83,29 @@ export default function SoundsList({ category, searchSound }) {
         <div className="flex flex-row items-center">
           <Skeleton variant="rounded" width={40} height={40} />
           <div className="ml-2">
-            <Skeleton width={100}/>
-            <Skeleton width={40}/>
+            <Skeleton width={100} />
+            <Skeleton width={40} />
           </div>
         </div>
         <div className="flex flex-row items-center">
           <Skeleton variant="rounded" width={40} height={40} />
           <div className="ml-2">
-            <Skeleton width={100}/>
-            <Skeleton width={40}/>
+            <Skeleton width={100} />
+            <Skeleton width={40} />
           </div>
         </div>
         <div className="flex flex-row items-center">
           <Skeleton variant="rounded" width={40} height={40} />
           <div className="ml-2">
-            <Skeleton width={100}/>
-            <Skeleton width={40}/>
+            <Skeleton width={100} />
+            <Skeleton width={40} />
           </div>
         </div>
         <div className="flex flex-row items-center ">
           <Skeleton variant="rounded" width={40} height={40} />
           <div className="ml-2">
-            <Skeleton width={100}/>
-            <Skeleton width={40}/>
+            <Skeleton width={100} />
+            <Skeleton width={40} />
           </div>
         </div>
       </div>
@@ -105,53 +116,63 @@ export default function SoundsList({ category, searchSound }) {
     return <div className="p-4">{t("pureExistance")}</div>;
   }
 
-  const { sounds } = soundsByCat;
-
-  const filteredSoundsByCat = category === "all" ? sounds : sounds.filter((s) => ((s.category === category)));
-  
-  if (filteredSoundsByCat.length === 0) {
-    return <div className="p-4">{t("catSoundExistace")} "{category}"</div>;
-  }
-
-  const filteredSounds = filteredSoundsByCat.filter((s) => (s.title.toLowerCase().includes(searchSound.toLowerCase())) || (s.author.toLowerCase().includes(searchSound.toLowerCase())));
-  
   const formatTime = (s) => {
     const min = Math.floor(s / 60) || 0;
     const sec = Math.floor(s % 60) || 0;
     return `${min}:${sec.toString().padStart(2, "0")}`;
   };
 
-  const soundslist = filteredSounds.map((s) => {
+  const soundslist = visibleItems.map((s) => {
     return (
-        <div
-          className="group flex flex-row justify-between items-center w-ful px-4 py-1 rounded-md m-2  bg-light dark:bg-dark hover:bg-lightElements  dark:hover:bg-darkElements transition-all"
-          key={s.id}
-          onClick={() => handleListenSound(s)}
-        >
-          <div className="flex flex-row">
-            <img src={s.coverImage} alt={s.title} className="w-10 h-10 rounded-md flex flex-row justify-between items-center"></img>
-            <div className={settings.language === "ar" ? "mr-1" : "ml-1"}>
-              <div className="text-md font-medium text-lightList dark:text-darkElements group-hover:text-light dark:group-hover:text-dark">{s.title}</div>
-              <div className="text-xs text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">{s.author}</div>
+      <div
+        className="group flex flex-row justify-between items-center w-ful px-4 py-1 rounded-md m-2  bg-light dark:bg-dark hover:bg-lightElements  dark:hover:bg-darkElements transition-all"
+        key={s.id}
+        onClick={() => handleListenSound(s)}
+      >
+        <div className="flex flex-row">
+          <img
+            src={s.coverImage}
+            alt={s.title}
+            className="w-10 h-10 rounded-md flex flex-row justify-between items-center"
+          ></img>
+          <div className={settings.language === "ar" ? "mr-1" : "ml-1"}>
+            <div className="text-md font-medium text-lightList dark:text-darkElements group-hover:text-light dark:group-hover:text-dark">
+              {s.title}
+            </div>
+            <div className="text-xs text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">
+              {s.author}
             </div>
           </div>
-          <div className={settings.language === "ar" ? "mr-2" : "ml-2"}>
-            <div className="text-xs font-medium text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">{formatTime(s.duration)}</div>
+        </div>
+        <div className={settings.language === "ar" ? "mr-2" : "ml-2"}>
+          <div className="text-xs font-medium text-lightElements dark:text-darkList group-hover:text-light dark:group-hover:text-dark">
+            {formatTime(s.duration)}
           </div>
         </div>
+      </div>
     );
   });
 
   return (
     <div>
-      {
-        soundslist.length > 0
-        ? soundslist
-        : <div className="text-lightElements dark:text-darkElements text-4xl m-6">
-            {t("existance")} {searchSound ? searchSound : "this"}.
+      {soundslist.length > 0 ? (
+        soundslist
+      ) : (
+        <div className="text-lightElements dark:text-darkElements text-4xl m-6">
+          {t("existance")} {searchSound ? searchSound : "this"}.
+        </div>
+      )}
+
+      {hasMore && (
+        <div ref={sentinelRef} className="flex justify-center py-4">
+          <div className="animate-pulse text-lightElements dark:text-darkElements">
+            Loading more sounds...
           </div>
-      }
-      <div className="flex justify-center">{(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}</div>
+        </div>
+      )}
+      <div className="flex justify-center">
+        {(listenPage || isPlaying) && <DisplaySound sound={listenSound} />}
+      </div>
     </div>
   );
 }
