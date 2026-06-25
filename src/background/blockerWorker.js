@@ -1,5 +1,5 @@
 import { browserAPI } from "../shared/utils/browserAPI";
-import { updateStats } from "./background";
+import { updateStats } from "../shared/utils/statesUtils.js";
 
 async function getUrls() {
   try {

@@ -1,5 +1,6 @@
 // background.js
 import { blockWorker } from "./blockerWorker.js";
+import { updateStats } from "../shared/utils/statesUtils.js";
 
 let offscreenReady = false;
 let offscreenReadyTs = 0;
@@ -878,62 +879,4 @@ function broadcastAudioStatus(status, data = {}) {
   } catch (e) {
     console.error("[BG] broadcast send error:", e);
   }
-}
-
-// For tracing the user usage of the application
-export async function updateStats(type, amount = 1) {
-  const today = new Date().toISOString().split("T")[0];
-  const result = await browserAPI.storage.local.get(["statistics"]); // getting data if exists
-
-  const stats = result.statistics || {
-    totalWorkTime: 0,
-    totalBreakTime: 0,
-    totalLongBreakTime: 0,
-    totalSessions: 0,
-    totalListenTime: 0,
-    totalDeflectionsAttempted: 0,
-    tasksCompleted: 0,
-    tasksCreated: 0,
-    tasksPending: 0,
-    tasksCompleted_high: 0,
-    tasksCompleted_medium: 0,
-    tasksCompleted_low: 0,
-    days: [],
-  };
-  
-  if (!stats.days) stats.days = [];
-
-  let todayStats = stats.days.find((d) => d.date === today);
-  if (!todayStats) {
-    todayStats = {
-      date: today,
-      totalWorkTime: 0,
-      totalBreakTime: 0,
-      totalLongBreakTime: 0,
-      totalSessions: 0,
-      totalListenTime: 0,
-      totalDeflectionsAttempted: 0,
-      tasksCompleted: 0,
-      tasksCreated: 0,
-      tasksPending: 0,
-      tasksCompleted_high: 0,
-      tasksCompleted_medium: 0,
-      tasksCompleted_low: 0,
-    };
-    stats.days.push(todayStats);
-  }
-
-  if (stats[type] !== undefined) {
-    stats[type] += amount;
-  } else {
-    console.warn(`Unknown stats type: ${type}`);
-  }
-
-  if (todayStats[type] !== undefined) {
-    todayStats[type] += amount;
-  } else {
-    console.warn(`Unknown stats type for today: ${type}`);
-  }
-
-  await browserAPI.storage.local.set({ statistics: stats });
 }
