@@ -27,7 +27,7 @@ export default function ListByCategory() {
       }
     } catch (error) {
       console.error("Extension API not available:", error);
-      setUrlLogo("icons/LOGO.png");
+      setUrlImg("icons/LOGO.png");
     }
   }, []);
 
