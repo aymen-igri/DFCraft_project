@@ -1,31 +1,27 @@
-<div align="center">
-  <img src="public/icons/LOGO.png" alt="DFCraft Logo" width="700" />
-  
-  <!-- Tech Stack Badges -->
+<p align="center">
+  <img src="public/icons/LOGO.png" alt="DFCraft Logo" width="500" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-19.1.1-61DAFB?style=for-the-badge" alt="React" />
   <img src="https://img.shields.io/badge/Vite-7.1.6-646CFF?style=for-the-badge" alt="Vite" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-3.4.16-06B6D4?style=for-the-badge" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/MUI-7.3.5-007FFF?style=for-the-badge" alt="MUI" />
-  
-  <br/>
-  
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Axios-1.12.2-5A29E4?style=for-the-badge" alt="Axios" />
   <img src="https://img.shields.io/badge/ECharts-6.0.0-AA344D?style=for-the-badge" alt="ECharts" />
   <img src="https://img.shields.io/badge/ESLint-9.35.0-4B32C3?style=for-the-badge" alt="ESLint" />
   <img src="https://img.shields.io/badge/Manifest_V3-supported-34A853?style=for-the-badge" alt="Manifest V3" />
-  
-  <br/>
-  
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Chrome-supported-4285F4?style=for-the-badge" alt="Chrome" />
   <img src="https://img.shields.io/badge/Firefox-supported-FF7139?style=for-the-badge" alt="Firefox" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License" />
   <img src="https://img.shields.io/badge/i18n-EN_ǀ_FR_ǀ_AR-blue?style=for-the-badge" alt="i18n" />
-  
-  <br/>
-  <br/>
-  
-  <p>A browser extension that helps you stay focused with a Pomodoro timer, task management, ambient sounds, and distraction blocking — all in one clean interface.</p>
-</div>
+</p>
 
 ---
 
