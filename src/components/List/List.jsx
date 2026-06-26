@@ -5,7 +5,6 @@ const List = ({
   setSelectedElement,
   setIsDelete,
 }) => {
-  console.log("items", items);
   return (
     <div className="space-y-4">
       {items

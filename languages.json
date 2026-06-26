@@ -395,7 +395,9 @@
       "bType": "Type de blockage:",
       "Atitle": "Entrez une URL de page:",
       "SplaceHolder": "Rechercher une URL de page",
-      "existance": "URL non trouvé"
+      "existance": "URL non trouvé",
+      "invalidUrl": "Veuillez entrer un domaine valide (ex : youtube.com)",
+      "urlExists": "Cette URL est déjà dans votre liste"
     },
     "en": {
       "add": "Add a page URL",
@@ -407,7 +409,9 @@
       "bType": "Block Type:",
       "Atitle": "Enter a page URL:",
       "SplaceHolder": "Search for a URL page",
-      "existance": "URL doesn't exist"
+      "existance": "URL doesn't exist",
+      "invalidUrl": "Please enter a valid domain (e.g., youtube.com)",
+      "urlExists": "This URL is already in your list"
     },
     "ar": {
       "add": "إضافة عنوان URL لصفحة",
@@ -419,7 +423,9 @@
       "bType": "نوع الحظر:",
       "Atitle": "أدخل عنوان URL لصفحة:",
       "SplaceHolder": "ابحث عن صفحة URL",
-      "existance": "عنوان URL غير موجود"
+      "existance": "عنوان URL غير موجود",
+      "invalidUrl": "الرجاء إدخال نطاق صالح (مثل : youtube.com)",
+      "urlExists": "هذا الرابط موجود بالفعل في القائمة"
     }
   },
   "tracking": {

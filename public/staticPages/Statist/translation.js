@@ -1,5 +1,6 @@
 const translations =  {
     fr: {
+      pageTitle: "DFCraft - Statistiques",
       card1: "Concentration d'aujourd'hui",
       card2: "Tâches terminées",
       card3: "Temps de tranquillité",
@@ -29,6 +30,7 @@ const translations =  {
       warn_message: "Utilisez l'extension pour voir votre progression !",
     },
     en: {
+      pageTitle: "DFCraft - Statistics",
       card1: "Today's focus",
       card2: "Completed Tasks",
       card3: "Quiet Time",
@@ -58,6 +60,7 @@ const translations =  {
       warn_message: "Use The extension to see your progress!",
     },
     ar: {
+      pageTitle: "DFCraft - الإحصائيات",
       card1: "تركيز اليوم",
       card2: "المهام المكتملة",
       card3: "وقت الهدوء",

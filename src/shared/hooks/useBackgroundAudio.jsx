@@ -15,7 +15,6 @@ export default function useBackgroundAudio() {
   useEffect(() => {
     const handleMessage = (m, sender, sendResponse) => {
       if (m.type === "AUDIO_STATUS_UPDATE") {
-        console.log("Received AUDIO_STATUS_UPDATE:", m);
         if (m.currentSound) {
           setCurrentSound(m.currentSound);
         }
@@ -139,7 +138,6 @@ export default function useBackgroundAudio() {
   };
 
   const play = async (soundUrl) => {
-    console.log("▶️ [HOOK] Playing:", soundUrl);
     setLoading(true);
     setError(null);
     setCurrentSound(soundUrl);

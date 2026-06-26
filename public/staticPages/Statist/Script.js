@@ -32,7 +32,6 @@ function updateDividedData(index) {
   }
 }
 
-
 async function initStatisticsPage() {
   const result = await browserAPI.storage.local.get(["statistics"]);
   globalData = result.statistics;
@@ -79,7 +78,6 @@ function getCalendarChartData() {
           60,
       );
       const list = [day.date, minutes];
-      console.warn("Calendar data point:", list);
       return list;
     });
   } else return [];
@@ -188,7 +186,6 @@ function updateDividedData(index) {
 
 function renderDependedCharts() {
   if (!devidedData || devidedData.length === 0) {
-    console.warn("data may not be loaded yet, cannot render charts");
     return;
   }
 
@@ -514,8 +511,6 @@ function renderSoundChart() {
   const soundData = devidedData.map(
     (d) => Math.floor(d.totalListenTime || 0) / 60,
   );
-  console.warn("Sound chart data:", soundData);
-
   // creating Bar Chart for sound track
 
   let domSound = document.getElementById("chart-container-sound");
@@ -991,7 +986,6 @@ function applyTheme(theme) {
 }
 
 let currentUserLanguage = browserAPI.i18n.getUILanguage();
-console.warn("Current user language:", currentUserLanguage);
 // for language changes selection
 let currentLang = localStorage.getItem("settings.language") || "en";
 

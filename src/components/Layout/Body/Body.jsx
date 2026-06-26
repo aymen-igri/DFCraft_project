@@ -7,7 +7,6 @@ import { browserAPI } from "../../../shared/utils/browserAPI.js";
 
 export default function Body({ choosenPage }) {
   const renderPage = () => {
-    console.log("cest la page chosie", choosenPage);
     switch (choosenPage) {
       case "home":
         return <HomePage />;

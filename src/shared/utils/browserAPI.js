@@ -107,7 +107,6 @@ export const browserAPI = (() => {
   }
 
   // fallback for testing in non-extension environment
-  console.warn("No browser extension API found - using mock");
   return {
     runtime: {
       sendMessage: () => Promise.resolve(null),

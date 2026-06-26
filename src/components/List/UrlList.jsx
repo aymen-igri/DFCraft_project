@@ -12,7 +12,6 @@ const UrlList = ({ urlElements, setUrlElements, setSelectedElement }) => {
         {t("existance")}
       </div>
     );
-  console.log("urlElements", urlElements);
   return (
     <div>
       <List
@@ -29,11 +28,8 @@ function UrlItem({ element, setElements, setDeletingElement }) {
   const [selected, setSelected] = useState("");
   const [checked, setChecked] = useState(false);
 
-  console.log("element", element);
-
   const handleCheckboxChange = (event) => {
     setChecked(event.target.checked);
-    console.log("event.target.checked", event.target.checked);
     if (event.target.checked) {
       setDeletingElement((prv) => [...prv, element]);
     } else {

@@ -18,8 +18,6 @@ const DEFAULT_SETTINGS = {
   darkMode: true,
 };
 
-console.warn(DEFAULT_SETTINGS);
-
 // ⚠️ The purple theme MUST exactly match the hardcoded values in tailwind.config.js.
 // Since purple uses no data-theme override, Tailwind's values are what actually render.
 // The other themes override Tailwind via [data-theme] scoped CSS, so their values

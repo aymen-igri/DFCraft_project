@@ -9,7 +9,6 @@ export default function EasyTasks() {
 
   useEffect(() => {
     const Tasks = JSON.parse(localStorage.getItem("dfcraft_todos") || "[]");
-    console.log("tasks: ", Tasks);
     setTasks(Tasks);
     setCompletedTasks(Tasks.filter((task) => task.completed).length);
   }, []);

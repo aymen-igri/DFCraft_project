@@ -26,17 +26,10 @@ export default function DisplaySound({ sound }) {
 
   // for pausing sound i guess or playing the sound
   const togglePlay = () => {
-    console.log("🎵 TOGGLE PLAY");
-    console.log("  sound.file:", sound.file);
-    console.log("  currentSound:", currentSound);
-    console.log("  isPlaying:", isPlaying);
-
     // ✅ Use normalized comparison
     if (isPlaying && isCurrentSoundPlaying()) {
-      console.log("  → PAUSING");
       pause();
     } else {
-      console.log("  → PLAYING");
       play(sound.file);
     }
   };
@@ -54,8 +47,6 @@ export default function DisplaySound({ sound }) {
     const currentFile = normalizeUrl(currentSound);
     const soundFile = normalizeUrl(sound.file);
 
-    console.log("  Comparing:", currentFile, "vs", soundFile);
-
     return currentFile === soundFile;
   };
 
@@ -66,13 +57,6 @@ export default function DisplaySound({ sound }) {
   };
 
   const isThisSoundPlaying = isPlaying && isCurrentSoundPlaying();
-
-  console.log("🎵 DisplaySound render:");
-  console.log("  isPlaying:", isPlaying);
-  console.log("  isThisSoundPlaying:", isThisSoundPlaying);
-  console.log("  current buffering progress:", bufferProgress);
-  console.log("  loading:", loading);
-  console.log("  error:", error);
 
   const soundplayicon = () => {
     return loading || buffering ? (

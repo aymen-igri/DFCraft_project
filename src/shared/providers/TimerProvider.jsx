@@ -18,14 +18,9 @@ export function TimerProvider({ children }) {
 
   // Load from background ONCE on mount
   useEffect(() => {
-    console.log("🔵 TimerProvider mounting...");
-
     const loadTimer = async () => {
       try {
-        console.log("📞 Requesting timer data...");
         const res = await browserAPI.runtime.sendMessage({ type: "GET_TIMER" });
-        console.log("📥 Received:", res);
-
         if (res && isMounted.current) {
           setTime(res.time);
           setOriginalTime(res.originalTime);
@@ -36,8 +31,7 @@ export function TimerProvider({ children }) {
           setIsRunning(res.isRunning);
           setSessionCount(res.sessionCount);
           isInitialized.current = true; // ✅ Now safe to sync
-          console.log("✅ State initialized:", res);
-        }
+          }
       } catch (error) {
         console.error("❌ Failed to load timer:", error);
       }
@@ -65,29 +59,17 @@ export function TimerProvider({ children }) {
     return () => {
       isMounted.current = false;
       browserAPI.runtime.onMessage.removeListener(listener);
-      console.log("🔴 TimerProvider unmounting");
-    };
+      };
   }, []); // ✅ Only run once on mount
 
   // Sync to background (ONLY after initialization and when user changes state)
   useEffect(() => {
     if (!isInitialized.current) {
-      console.log("⏭️ Skipping sync - not initialized yet");
       return;
     }
 
     const syncTimer = async () => {
       try {
-        console.log("🔄 SYNCING to background:", {
-          time,
-          isRunning,
-          originalTime,
-          workTime,
-          breakTime,
-          longBreakTime,
-          phaseType,
-          sessionCount,
-        });
         await browserAPI.runtime.sendMessage({
           type: "UPDATE_TIMER",
           data: {
@@ -101,8 +83,7 @@ export function TimerProvider({ children }) {
             sessionCount,
           },
         });
-        console.log("✅ Sync complete");
-      } catch (error) {
+        } catch (error) {
         console.error("❌ Failed to sync timer:", error);
       }
     };
@@ -122,7 +103,6 @@ export function TimerProvider({ children }) {
   // Handle reset
   useEffect(() => {
     if (reset) {
-      console.log("🔄 RESET triggered");
       setTime(originalTime);
       setSessionCount(0);
       setIsRunning(false);

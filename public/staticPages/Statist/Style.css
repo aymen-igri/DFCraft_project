@@ -142,7 +142,7 @@ header {
 /* invisible select over the icon */
 #language-select {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   /* align with svg */
   top: 0;
   width: 35px;
@@ -151,12 +151,11 @@ header {
   background: transparent;
   -webkit-appearance: none;
   appearance: none;
-  z-index: 2;
   cursor: pointer;
   font-family: "Concert One", "AA-ANIQ", cursive !important;
   scrollbar-width: none;
   border-radius: 5px;
-  z-index: 1;
+  z-index: 2;
   border: none;
 }
 

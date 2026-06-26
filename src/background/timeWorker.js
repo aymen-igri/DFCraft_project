@@ -29,9 +29,6 @@ export function updateTimerFromLastSave() {
     const oldTime = timerData.time;
     timerData.time = Math.max(0, timerData.time - secondsPassed);
     timerData.lastUpdate = now;
-    console.log(
-      `⏩ Elapsed: ${secondsPassed}s (${oldTime} → ${timerData.time})`,
-    );
     saveTimerData();
   }
 }
@@ -50,32 +47,9 @@ export function setupTimerListener() {
     } else if (request.type === "UPDATE_TIMER") {
       const oldData = { ...timerData };
       Object.assign(timerData, request.data, { lastUpdate: Date.now() });
-      console.log("🔄 UPDATE:", { before: oldData, after: timerData });
       saveTimerData();
       sendResponse({ success: true });
     }
     return true; // Keep channel open for async response
   });
 }
-
-// Boucle du timer
-// export function startTimerLoop() {
-//   setInterval(() => {
-//     if (timerData.isRunning && timerData.time > 0) {
-//       timerData.time--;
-//       timerData.lastUpdate = Date.now();
-//       saveTimerData();
-
-//       // Mettre à jour badge
-//       if (browserAPI.action && browserAPI.action.setBadgeText) {
-//         browserAPI.action.setBadgeText({ text: String(timerData.time) });
-//       }
-
-//       // Notifier les pages ouvertes
-//       browserAPI.runtime.sendMessage({
-//         type: 'TIMER_TICK',
-//         data: timerData
-//       }).catch(() => {});
-//     }
-//   }, 1000);
-// }
