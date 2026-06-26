@@ -30,7 +30,6 @@ try {
   // 4️⃣ Files needed from main build
   const neededFiles = [
     "background.js",
-    "content.js",
     "main.js",
     "main.css",
     "popup.css",

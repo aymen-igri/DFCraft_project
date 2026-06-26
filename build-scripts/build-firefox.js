@@ -32,7 +32,6 @@ try {
   // Define which files we actually need for the extension
   const neededFiles = [
     "background.js",
-    "content.js",
     "main.js",
     "main.css",
     "popup.css",
