@@ -1,48 +1,20 @@
 import { useEffect, useState } from "react";
 import { CirclePlay, LoaderCircle, CirclePause } from "lucide-react";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
-import config from "../../shared/constants/config";
-import axios from "axios";
 import { useSettings } from "../../shared/context/SettingsContext";
+import { useSoundData } from "../../shared/context/SoundDataContext";
 
 export default function EasySoundPlayer() {
-  const soundsURL = config.SoundLibraryApi;
-  const [sounds, setSounds] = useState([]);
   const [sound, setSound] = useState(null);
   const { settings } = useSettings();
   const { currentSound, buffering, loading, isPlaying, play, pause } =
     useBackgroundAudio();
+  const { sounds } = useSoundData();
 
   useEffect(() => {
-    const fetchSounds = async () => {
-      try {
-        const res = await axios.get(soundsURL, {
-          headers: {
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-          },
-        });
-        console.log(res);
-        setSounds(res.data.sounds);
-        if (!res.data || res.data.sounds.length === 0) {
-          throw new Error("No sounds found in the easy access to response");
-        }
-        console.log("Fetched sounds data 2:", sounds);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchSounds();
-  }, [soundsURL]);
-
-  useEffect(() => {
-    // Wait until we have the sounds list from the API
-    if (sounds.length === 0) return;
+    if (!sounds || sounds.length === 0) return;
 
     if (currentSound) {
-      console.log("🔄 Restoring sound display for:", currentSound);
-
       const normalizeUrl = (url) => {
         if (!url) return "";
         return url.split("/").pop() || url;
@@ -56,28 +28,14 @@ export default function EasySoundPlayer() {
 
       if (playingSound) {
         setSound(playingSound);
-        console.log("✅ Found playing sound:", playingSound.title);
-      } else {
-        console.warn(
-          "⚠️ No matching sound found for currentSound:",
-          currentSound,
-        );
       }
     }
   }, [currentSound, sounds]);
 
   const togglePlay = () => {
-    console.log("🎵 TOGGLE PLAY");
-    console.log("  sound.file:", sound.file);
-    console.log("  currentSound:", currentSound);
-    console.log("  isPlaying:", isPlaying);
-
-    // ✅ Use normalized comparison
     if (isPlaying && currentSound && sound && sound.file === currentSound) {
-      console.log("  → PAUSING");
       pause();
     } else {
-      console.log("  → PLAYING");
       play(sound.file);
     }
   };

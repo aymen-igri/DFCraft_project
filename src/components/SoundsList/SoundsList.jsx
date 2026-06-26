@@ -1,36 +1,31 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import config from "../../shared/constants/config";
 import DisplaySound from "./DisplaySound";
 import useBackgroundAudio from "../../shared/hooks/useBackgroundAudio";
 import { Skeleton } from "@mui/material";
 import { useTranslation } from "../../shared/i18n/translations";
 import { useSettings } from "../../shared/context/SettingsContext";
+import { useSoundData } from "../../shared/context/SoundDataContext";
 import useLazyLoad from "../../shared/hooks/useLazyLoad.jsx";
 
 export default function SoundsList({ category, searchSound }) {
-  const [soundsByCat, setSoundsByCat] = useState(null);
   const [listenPage, setListenPage] = useState(false);
   const [listenSound, setListenSound] = useState(null);
   const { settings } = useSettings();
   const { t } = useTranslation("sound");
   const { play, isPlaying, currentSound } = useBackgroundAudio();
-  const catURL = config.SoundLibraryApi;
+  const { sounds: allSounds, isLoading } = useSoundData();
 
-  const sounds = soundsByCat?.sounds || [];
+  const sounds = allSounds || [];
   const filteredSoundsByCat =
     category === "all" ? sounds : sounds.filter((s) => s.category === category);
 
   const filteredSounds = filteredSoundsByCat.filter(
     (s) =>
-      s.title.toLowerCase().includes(searchSound.toLowerCase()) ||
-      s.author.toLowerCase().includes(searchSound.toLowerCase()),
+      s.title?.toLowerCase().includes(searchSound.toLowerCase()) ||
+      s.author?.toLowerCase().includes(searchSound.toLowerCase()),
   );
 
-  const { visibleItems, hasMore, sentinelRef } = useLazyLoad(
-    filteredSounds,
-    10,
-  );
+  const { visibleItems, hasMore, sentinelRef } = useLazyLoad(filteredSounds, 10);
 
   const handleListenSound = (s) => {
     setListenPage(true);
@@ -38,48 +33,30 @@ export default function SoundsList({ category, searchSound }) {
     play(s.file);
   };
 
-  // Fetch sounds by category
-  useEffect(() => {
-    const fetchSoundsByCat = async () => {
-      try {
-        const res = await axios.get(`${catURL}?v=${Date.now()}`);
-        const data = res.data;
-        setSoundsByCat(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchSoundsByCat();
-  }, [catURL]);
-
   // Restore the currently playing sound when extension reopens
   useEffect(() => {
-    if (!soundsByCat?.sounds) return;
+    if (!allSounds) return;
 
     if (currentSound && !listenSound) {
-      console.log("🔄 Restoring sound display for:", currentSound);
-
       const normalizeUrl = (url) => {
         if (!url) return "";
         return url.split("/").pop() || url;
       };
 
       const currentFile = normalizeUrl(currentSound);
-      const playingSound = soundsByCat.sounds.find((s) => {
+      const playingSound = allSounds.find((s) => {
         const soundFile = normalizeUrl(s.file);
         return soundFile === currentFile;
       });
 
       if (playingSound) {
-        console.log("✅ Found playing sound:", playingSound.title);
         setListenSound(playingSound);
         setListenPage(true);
       }
     }
-  }, [currentSound, soundsByCat, listenSound]);
+  }, [currentSound, allSounds, listenSound]);
 
-  if (!soundsByCat) {
+  if (isLoading) {
     return (
       <div className="ml-2">
         <div className="flex flex-row items-center">
@@ -114,7 +91,7 @@ export default function SoundsList({ category, searchSound }) {
     );
   }
 
-  if (!soundsByCat.sounds) {
+  if (!allSounds) {
     return <div className="p-4">{t("pureExistance")}</div>;
   }
 

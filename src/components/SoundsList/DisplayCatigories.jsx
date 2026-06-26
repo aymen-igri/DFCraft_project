@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import axios from "axios";
 import { Skeleton } from "@mui/material";
-import config from "../../shared/constants/config";
 import "./DisplaySound.css";
 import { useTranslation } from "../../shared/i18n/translations";
+import { useSoundData } from "../../shared/context/SoundDataContext";
 
 export default function DisplayCatigories({
   category,
@@ -12,27 +11,14 @@ export default function DisplayCatigories({
   setCategories,
   setShowCats,
 }) {
-  const catURL = config.SoundLibraryApi;
   const { t } = useTranslation("sound");
+  const { categories: fetchedCategories } = useSoundData();
 
   useEffect(() => {
-    const featchCategories = async () => {
-      try {
-        const res = await axios.get(catURL, {
-          headers: {
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-          },
-        });
-        const data = res.data.categories;
-        console.log(data);
-        setCategories([{ id: "all", name: "All" }, ...data]);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    featchCategories();
-  }, []);
+    if (fetchedCategories) {
+      setCategories([{ id: "all", name: "All" }, ...fetchedCategories]);
+    }
+  }, [fetchedCategories, setCategories]);
 
   const selectedCat = (c) => {
     return c === category
