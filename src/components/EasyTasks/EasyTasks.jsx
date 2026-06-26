@@ -41,31 +41,39 @@ export default function EasyTasks() {
         }`}
       >
         <ul>
-          {tasks.map((task) => (
-            <li
-              key={task.id}
-              className="mb-1 flex flex-row justify-between items-center"
-            >
-              <p
-                className={`text-light dark:text-dark ${task.completed ? "line-through opacity-80" : ""}`}
-              >
-                {task.title.slice(0, 25)}
-                {task.title.length > 25 ? "..." : ""}
+          {tasks.length === 0 ? (
+            <li className="mb-1 flex flex-row justify-center items-center py-2">
+              <p className="text-light dark:text-dark opacity-70">
+                {t("noTasks")}
               </p>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => {
-                  setTasks(
-                    tasks.map((t) =>
-                      t.id === task.id ? { ...t, completed: !t.completed } : t,
-                    ),
-                  );
-                }}
-                className="appearance-none mr-2 w-6 h-6 bg-transparent rounded-sm border-2 border-light dark:border-dark checked:before:content-['✓'] checked:before:w-full checked:before:h-full checked:before:text-light dark:checked:before:text-dark checked:before:flex checked:before:items-center checked:before:justify-center checked:before:text-2xl"
-              />
             </li>
-          ))}
+          ) : (
+            tasks.map((task) => (
+              <li
+                key={task.id}
+                className="mb-1 flex flex-row justify-between items-center"
+              >
+                <p
+                  className={`text-light dark:text-dark ${task.completed ? "line-through opacity-80" : ""}`}
+                >
+                  {task.title.slice(0, 25)}
+                  {task.title.length > 25 ? "..." : ""}
+                </p>
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => {
+                    setTasks(
+                      tasks.map((t) =>
+                        t.id === task.id ? { ...t, completed: !t.completed } : t,
+                      ),
+                    );
+                  }}
+                  className="appearance-none mr-2 w-6 h-6 bg-transparent rounded-sm border-2 border-light dark:border-dark checked:before:content-['✓'] checked:before:w-full checked:before:h-full checked:before:text-light dark:checked:before:text-dark checked:before:flex checked:before:items-center checked:before:justify-center checked:before:text-2xl"
+                />
+              </li>
+            ))
+          )}
         </ul>
       </div>
     </div>

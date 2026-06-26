@@ -30,19 +30,22 @@
       "work": "Travail",
       "break": "Pause",
       "longBreak": "Longue pause",
-      "completedTasks": "Total des tâches complétées"
+      "completedTasks": "Total des tâches complétées",
+      "noTasks": "Aucune tâche pour le moment"
     },
     "en": {
       "work": "Work",
       "break": "Break",
       "longBreak": "Long Break",
-      "completedTasks": "Total completed tasks"
+      "completedTasks": "Total completed tasks",
+      "noTasks": "No tasks yet"
     },
     "ar": {
       "work": "عمل",
       "break": "استراحة",
       "longBreak": "استراحة طويلة",
-      "completedTasks": "إجمالي المهام المكتملة"
+      "completedTasks": "إجمالي المهام المكتملة",
+      "noTasks": "لا توجد مهام حتى الآن"
     }
   },
   "sound": {
