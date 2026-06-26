@@ -2,35 +2,20 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { ThemeProvider } from '@mui/material/styles'
 
-// Wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', () => {
+function mount() {
   const rootElement = document.getElementById('root');
-  
-  if (rootElement) {
-    console.log('🎯 DFCraft: Mounting React app...');
-    const root = createRoot(rootElement);
-    root.render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    );
-  } else {
-    console.error('Root element not found!');
-  }
-});
+  if (!rootElement) return;
 
-// Also try immediate render in case DOM is already ready
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  console.log('🎯 DFCraft: Mounting React app immediately...');
-  const root = createRoot(rootElement);
-  root.render(
+  createRoot(rootElement).render(
     <StrictMode>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+      <App />
     </StrictMode>
   );
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mount);
+} else {
+  mount();
 }
