@@ -18,7 +18,12 @@ export default function DisplayCatigories({
   useEffect(() => {
     const featchCategories = async () => {
       try {
-        const res = await axios.get(catURL);
+        const res = await axios.get(catURL, {
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        });
         const data = res.data.categories;
         console.log(data);
         setCategories([{ id: "all", name: "All" }, ...data]);

@@ -16,7 +16,12 @@ export default function EasySoundPlayer() {
   useEffect(() => {
     const fetchSounds = async () => {
       try {
-        const res = await axios.get(soundsURL);
+        const res = await axios.get(soundsURL, {
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        });
         console.log(res);
         setSounds(res.data.sounds);
         if (!res.data || res.data.sounds.length === 0) {

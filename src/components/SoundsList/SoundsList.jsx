@@ -42,7 +42,7 @@ export default function SoundsList({ category, searchSound }) {
   useEffect(() => {
     const fetchSoundsByCat = async () => {
       try {
-        const res = await axios.get(catURL);
+        const res = await axios.get(`${catURL}?v=${Date.now()}`);
         const data = res.data;
         setSoundsByCat(data);
       } catch (err) {
