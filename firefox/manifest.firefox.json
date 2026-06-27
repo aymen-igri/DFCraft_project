@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "DFCraft - Deep Focus Timer",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "Craft your focus with Pomodoro timer, todos, and distraction blocking",
 
   "icons": {
@@ -36,6 +36,8 @@
     "offscreen.js",
     "fonts/*.ttf"
   ],
+
+  "content_security_policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://raw.githubusercontent.com https://objects.githubusercontent.com; media-src 'self' https://github.com https://objects.githubusercontent.com https://release-assets.githubusercontent.com blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://release-assets.githubusercontent.com",
 
   "options_ui": {
     "page": "src/options/options.html",
